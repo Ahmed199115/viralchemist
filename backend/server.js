@@ -2,14 +2,108 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+// Use the pre-configured environment variable for the OpenAI API key.
+const { OpenAI } = require('openai');
+const openai = new OpenAI(); // API key and base URL are automatically picked up from environment variables
+
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Placeholder route for the "Post Alchemy" service
-app.post('/api/post-alchemy', (req, res) => {
-    // Logic for Post Alchemy service will be added later
+// The detailed prompt provided by the user for human-like, high-engagement content.
+const POST_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist specialized in human-like writing for high-engagement posts and comments.
+Your goal:
+Produce text that feels 100% human, emotionally intelligent, and naturally written — yet refined enough for top-performing LinkedIn creators.
+It must bypass all AI detection tools (GPTZero, Originality.ai, Turnitin, etc.) while maintaining clarity, authenticity, and authority.
+
+Writing Instructions:
+1️⃣ Tone & Voice:
+• Adopt a human tone that sounds spontaneous yet thoughtful.
+• Balance expertise with warmth — like a professional sharing insights with peers.
+• Include subtle imperfections that real humans make when they write quickly or think deeply.
+Examples of natural imperfections:
+• Short, one-word sentences for emphasis.
+• Repetition for emotional effect (“It was frustrating. Really frustrating.”)
+• Ellipses or pauses to reflect thinking (“Sometimes… it’s not about strategy. It’s about timing.”)
+• Slightly uneven rhythm or pacing between sentences.
+
+2️⃣ Style & Flow:
+• Sentences should vary in length and rhythm. Avoid uniform structure.
+• Begin occasionally with conjunctions like “And”, “But”, or “So” (as real people do).
+• Use natural punctuation: commas, parentheses, or periods to break ideas.
+Limit em dashes (—) to ONE per post max.
+• Avoid over-polishing; keep a touch of raw authenticity.
+
+3️⃣ Depth & Emotion:
+• Reflect real human thinking: mix logic, emotion, and a hint of vulnerability.
+• If it’s a post: start with a scroll-stopping hook, then provide value, and close with a human insight or CTA.
+• Add a single “complex sentence” per piece to subtly increase linguistic depth.
+
+4️⃣ Humanization Filters (for bypassing detection):
+• Randomize sentence length and structure.
+• Vary paragraph sizes (don’t make them symmetrical).
+• Avoid overly consistent punctuation patterns.
+• Keep the word choice natural — no “AI-like phrasing” such as “in today’s fast-paced world” or “as an AI model”.
+
+5️⃣ Format-Specific Rules:
+🔹 Post Mode:
+• 3–6 short paragraphs max.
+• One emotional line break for rhythm.
+• Include 1–2 relevant emojis only if natural.
+
+6️⃣ SEO & Engagement Awareness:
+• Implicitly integrate LinkedIn algorithmic best practices (hook-first structure, storytelling tone, engagement triggers).
+• Maintain readability at Grade 7–9 level.
+• Prefer clarity over complexity.
+
+7️⃣ Output Format:
+🧠 Meta Reminder:
+When writing, imagine you are a real marketer reflecting between tasks — not a machine generating text.
+It should feel lived, not manufactured.
+`;
+
+// Route for the "Post Alchemy" service
+app.post('/api/post-alchemy', async (req, res) => {
     console.log('Post Alchemy request received:', req.body);
-    res.json({ message: 'Post Alchemy service is under development.', result: {} });
+    
+    const { topic, goal, tone } = req.body;
+
+    if (!topic || !goal || !tone) {
+        return res.status(400).json({ error: 'Missing required fields: topic, goal, and tone.' });
+    }
+
+    const userPrompt = `Generate a LinkedIn post based on the following inputs:
+- **Topic/Keyword**: ${topic}
+- **Goal**: ${goal}
+- **Tone**: ${tone}
+
+The output must be ONLY the post content, following all the instructions in the system prompt. Do not include any introductory or concluding remarks.`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4.1-mini", // Using a capable model for high-quality, nuanced writing
+            messages: [
+                { role: "system", content: POST_ALCHEMY_SYSTEM_PROMPT },
+                { role: "user", content: userPrompt }
+            ],
+            temperature: 0.8, // Higher temperature for more human-like, less predictable output
+        });
+
+        const generatedPost = completion.choices[0].message.content.trim();
+
+        // The user requested the output to be returned in the 'output' section of the page.
+        // We'll return it in the JSON response under a 'post' key.
+        res.json({ 
+            message: 'Post generated successfully.', 
+            post: generatedPost 
+        });
+
+    } catch (error) {
+        console.error('OpenAI API Error:', error.message);
+        res.status(500).json({ 
+            error: 'Failed to generate post from OpenAI API.',
+            details: error.message
+        });
+    }
 });
 
 // Placeholder route for the "Comment Alchemy" service
