@@ -269,11 +269,61 @@ app.post('/api/comment-alchemy', upload.single('image'), async (req, res) => {
     }
 });
 
-// Placeholder route for the "Hashtags Generate" service
-app.post('/api/hashtags-generate', (req, res) => {
-    // Logic for Hashtags Generate service will be added later
+// System prompt for the Hashtags Generate service
+const HASHTAG_SYSTEM_PROMPT = `You are a professional social media hashtag strategist for LinkedIn. Your task is to analyze the provided topic/text and generate a list of highly relevant, categorized hashtags.
+
+The output MUST be a JSON object with the following structure:
+{
+  "Broad": ["#tag1", "#tag2", ...],
+  "Niche": ["#tagA", "#tagB", ...],
+  "Trending": ["#tagX", "#tagY", ...]
+}
+
+- 'Broad' hashtags should be general and high-volume.
+- 'Niche' hashtags should be specific to the sub-topic and low-volume.
+- 'Trending' hashtags should be current and widely used.
+- Generate 5-10 hashtags for each category.
+- Ensure all hashtags are professional and relevant to the topic.
+- Do not include any text or explanation outside the JSON object.`;
+
+// Route for the "Hashtags Generate" service
+app.post('/api/hashtags-generate', async (req, res) => {
     console.log('Hashtags Generate request received:', req.body);
-    res.json({ message: 'Hashtags Generate service is under development.', result: {} });
+    
+    const { topic } = req.body;
+
+    if (!topic) {
+        return res.status(400).json({ error: 'Missing required field: topic.' });
+    }
+
+    const userPrompt = `Generate categorized hashtags for the following topic/text: "${topic}"`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4.1-mini", // Use a capable model for structured output
+            messages: [
+                { role: "system", content: HASHTAG_SYSTEM_PROMPT },
+                { role: "user", content: userPrompt }
+            ],
+            temperature: 0.5, // Lower temperature for more predictable, structured output
+            response_format: { type: "json_object" }
+        });
+
+        const jsonString = completion.choices[0].message.content.trim();
+        const hashtags = JSON.parse(jsonString);
+
+        res.json({ 
+            message: 'Hashtags generated successfully.', 
+            hashtags: hashtags 
+        });
+
+    } catch (error) {
+        console.error('OpenAI API Error or JSON Parse Error:', error.message);
+        res.status(500).json({ 
+            error: 'Failed to generate structured hashtags from OpenAI API.',
+            details: error.message
+        });
+    }
 });
 
 // Placeholder route for user login
