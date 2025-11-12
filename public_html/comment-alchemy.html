@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   LinkedIn Comment Alchemy - AI Comment Generator | ViralChemist
+  </title>
+  <meta content="Generate insightful, professional comments for LinkedIn in seconds. Our AI Comment Alchemy helps you build relationships and establish thought leadership effortlessly." name="description"/>
+  <meta content="AI comment generator LinkedIn, LinkedIn comment writer, professional LinkedIn comments, increase engagement with LinkedIn comments, save time writing comments on LinkedIn" name="keywords"/>
+  <meta content="ViralChemist" name="author"/>
+  <!-- Preconnect to external domains -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://cdnjs.cloudflare.com" rel="preconnect"/>
+  <!-- Preload critical CSS -->
+  <link as="style" href="assets/css/optimize.css" rel="preload"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+  <link href="assets/css/optimize.css" rel="stylesheet"/>
+  <!-- SEO: JSON-LD Structured Data for the Service -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "AI Comment Generation",
+      "provider": {
+        "@type": "Organization",
+        "name": "ViralChemist"
+      },
+      "name": "LinkedIn Comment Alchemy",
+      "description": "An AI-powered tool to generate insightful and professional comments for LinkedIn posts.",
+      "url": "https://your-domain.com/comment-alchemy.html"
+    }
+  </script>
+  <script>
+   tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'viral-blue': '#3b82f6',
+                        'viral-purple': '#8b5cf6',
+                        'viral-dark': '#0f172a',
+                    }
+                }
+            }
+        }
+  </script>
+  <style>
+   .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .accordion-button i { transition: transform 0.3s ease; }
+        .accordion-button.active i { transform: rotate(180deg); }
+        .form-error { display: none; color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem; }
+        .file-upload-area { border: 2px dashed #9ca3af; transition: all 0.3s ease; }
+        .file-upload-area.dragover { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.05); }
+  </style>
+  <link href="https://viralchemist.com/comment-alchemy.html" rel="canonical"/>
+ </head>
+ <body class="font-inter bg-gray-50 dark:bg-viral-dark text-gray-900 dark:text-gray-200 min-h-screen flex flex-col">
+  <!-- Header Placeholder -->
+  <header id="header-placeholder">
+  </header>
+  <main class="flex-grow">
+   <!-- HERO SECTION -->
+   <section class="relative overflow-hidden py-20 pt-32 bg-gradient-to-br from-viral-purple/5 to-viral-blue/5 dark:from-viral-purple/10 dark:to-viral-blue/10">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+       Generate Insightful
+       <span class="bg-gradient-to-r from-viral-purple to-viral-blue bg-clip-text text-transparent">
+        LinkedIn Comments
+       </span>
+      </h1>
+      <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+       Create value-adding, professional comments that build relationships and establish thought leadership. No sign-up required.
+      </p>
+      <a class="px-8 py-4 bg-gradient-to-r from-viral-purple to-viral-blue text-white font-bold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105" href="#generator-section">
+       <i class="fas fa-arrow-down mr-2">
+       </i>
+       Try It Now
+      </a>
+     </div>
+    </div>
+   </section>
+   <!-- GENERATOR BOX SECTION -->
+   <section class="py-16" id="generator-section">
+    <div class="container mx-auto px-6">
+     <div class="max-w-3xl mx-auto">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+       <div class="flex items-center space-x-3 mb-6">
+        <div class="w-10 h-10 bg-gradient-to-br from-viral-purple to-viral-blue rounded-lg flex items-center justify-center">
+         <i class="fas fa-comments text-white">
+         </i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+         Start Creating
+        </h2>
+       </div>
+       <form class="space-y-5" id="generatorForm">
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="postTextInput">
+          Post Content (Text)
+         </label>
+         <textarea class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-purple focus:border-transparent outline-none resize-none" id="postTextInput" placeholder="Paste the LinkedIn post text you want to comment on..." rows="4"></textarea>
+         <p class="form-error" id="postTextError">
+          Please paste the post content to generate a comment.
+         </p>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Post Screenshot (Optional)
+         </label>
+         <div class="file-upload-area rounded-lg p-6 text-center cursor-pointer" id="uploadArea">
+          <input accept="image/*" class="hidden" id="screenshotInput" type="file"/>
+          <i class="fas fa-cloud-upload-alt text-3xl text-viral-purple mb-2">
+          </i>
+          <p class="text-gray-700 dark:text-gray-400">
+           Drag &amp; drop or
+           <span class="text-viral-purple font-semibold">
+            click to upload
+           </span>
+          </p>
+          <p class="text-sm text-gray-500 mt-1">
+           PNG, JPG up to 5MB
+          </p>
+         </div>
+         <div class="hidden mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between" id="filePreview">
+          <p class="text-sm text-gray-700 dark:text-gray-400">
+           File:
+           <span class="font-semibold" id="fileName">
+           </span>
+          </p>
+          <button class="text-red-500 hover:text-red-700 text-sm font-semibold" id="removeFileButton" type="button">
+           Remove
+          </button>
+         </div>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="goalSelect">
+          Comment Goal
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-purple focus:border-transparent outline-none" id="goalSelect">
+          <option value="auto">
+           Auto (Let AI Decide)
+          </option>
+          <option value="value-add">
+           Add Value &amp; Insights
+          </option>
+          <option value="thought-leadership">
+           Establish Expertise
+          </option>
+          <option value="engagement">
+           Build Relationships
+          </option>
+          <option value="question">
+           Ask a Thoughtful Question
+          </option>
+          <option value="support">
+           Show Support &amp; Encouragement
+          </option>
+          <option value="disagree">
+           Politely Disagree
+          </option>
+         </select>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="toneSelect">
+          Tone
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-purple focus:border-transparent outline-none" id="toneSelect">
+          <option value="auto">
+           Auto (Let AI Decide)
+          </option>
+          <option value="professional">
+           Professional
+          </option>
+          <option value="conversational">
+           Conversational
+          </option>
+          <option value="analytical">
+           Analytical
+          </option>
+          <option value="encouraging">
+           Encouraging
+          </option>
+          <option value="inquisitive">
+           Inquisitive
+          </option>
+          <option value="humorous">
+           Witty / Humorous
+          </option>
+         </select>
+        </div>
+        <button class="w-full px-6 py-3 bg-gradient-to-r from-viral-purple to-viral-blue text-white font-bold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2" type="submit">
+         <i class="fas fa-wand-magic-sparkles">
+         </i>
+         <span>
+          Generate Comment
+         </span>
+        </button>
+       </form>
+       <div class="hidden mt-8 text-center" id="loadingState">
+        <p class="text-gray-700 dark:text-gray-300 font-semibold">
+         Generating your comment...
+        </p>
+       </div>
+       <div class="hidden mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700" id="resultBox">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+         Your Generated Comment
+        </h3>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg mb-4 border border-gray-200 dark:border-gray-600 whitespace-pre-wrap" id="generatedContent">
+        </div>
+        <div class="flex items-center justify-between">
+         <div class="flex space-x-3">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors flex items-center space-x-2" id="copyButton">
+           <i class="fas fa-copy">
+           </i>
+           <span id="copyButtonText">
+            Copy
+           </span>
+          </button>
+          <button class="px-4 py-2 bg-viral-purple hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors flex items-center space-x-2" id="regenerateButton">
+           <i class="fas fa-redo">
+           </i>
+           <span>
+            Regenerate
+           </span>
+          </button>
+         </div>
+         <div class="text-sm text-gray-600 dark:text-gray-400 font-medium" id="charCount">
+          0 characters
+         </div>
+        </div>
+       </div>
+       <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-4">
+        <i class="fas fa-lock mr-1">
+        </i>
+        No sign-up required for your first generation.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- WHY CHOOSE VIRALCHEMIST -->
+   <section class="py-16 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        Why Choose Comment Alchemy?
+       </h2>
+       <p class="text-lg text-gray-700 dark:text-gray-300">
+        Meaningful comments build authority. Our AI generates professional, engaging comments that strengthen your professional relationships.
+       </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-viral-purple to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-brain text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Contextual Analysis
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Our AI deeply understands any post and generates relevant, thoughtful comments that add real value.
+        </p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-star text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Value-Adding Insights
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Comments that ask thoughtful questions and spark meaningful conversations with industry leaders.
+        </p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-handshake text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Relationship Building
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Comments designed to build genuine relationships and establish your presence as a thought leader.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- HOW IT WORKS -->
+   <section class="py-16 bg-gray-50 dark:bg-viral-dark">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+       How It Works
+      </h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-viral-purple to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         1
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        Share the Post
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Paste the post text, upload a screenshot, or provide the link.
+       </p>
+      </div>
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-viral-blue to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         2
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        AI Analyzes &amp; Crafts
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Our AI analyzes the post's intent and generates a valuable comment.
+       </p>
+      </div>
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         3
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        Copy &amp; Engage
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Copy your comment and post it to build your authority.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- WHAT MAKES US DIFFERENT -->
+   <section class="py-16 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+       What Makes Us Different?
+      </h2>
+     </div>
+     <div class="overflow-x-auto">
+      <table class="w-full min-w-max">
+       <thead>
+        <tr class="border-b-2 border-gray-300 dark:border-gray-700">
+         <th class="text-left py-4 px-4 font-bold text-gray-900 dark:text-white">
+          Feature
+         </th>
+         <th class="text-center py-4 px-4 font-bold text-gray-900 dark:text-white">
+          ViralChemist
+         </th>
+         <th class="text-center py-4 px-4 font-bold text-gray-700 dark:text-gray-400">
+          Other Tools
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          Contextual Understanding
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-times text-red-500 text-xl">
+          </i>
+         </td>
+        </tr>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          Value-Adding Content
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-exclamation-circle text-yellow-500 text-xl">
+          </i>
+         </td>
+        </tr>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          Screenshot Analysis
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-times text-red-500 text-xl">
+          </i>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+   <!-- FAQ SECTION -->
+   <section class="py-16 bg-gray-50 dark:bg-viral-dark">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-12 text-center">
+       Frequently Asked Questions
+      </h2>
+      <div class="space-y-4" id="faq-accordion">
+       <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
+        <button class="accordion-button w-full px-6 py-4 text-left font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+         <span>
+          Can I upload a screenshot of the post?
+         </span>
+         <i class="fas fa-chevron-down">
+         </i>
+        </button>
+        <div class="accordion-content px-6 pb-4 text-gray-700 dark:text-gray-300">
+         <p>
+          Absolutely! You can upload a screenshot, paste the text, or provide the post link. Our AI analyzes all inputs to generate a contextually relevant comment.
+         </p>
+        </div>
+       </div>
+       <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
+        <button class="accordion-button w-full px-6 py-4 text-left font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+         <span>
+          Will my comments sound authentic?
+         </span>
+         <i class="fas fa-chevron-down">
+         </i>
+        </button>
+        <div class="accordion-content px-6 pb-4 text-gray-700 dark:text-gray-300">
+         <p>
+          Yes! ViralChemist is designed to generate 100% human-like comments. Our algorithms ensure that comments read naturally and authentically, without any signs of AI generation.
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- EXPLORE MORE TOOLS -->
+   <section class="py-16">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-12 text-center">
+       Explore More Tools
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <a class="group bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-viral-blue transition-all" href="post-alchemy.html">
+        <div class="w-12 h-12 bg-gradient-to-br from-viral-blue to-blue-600 rounded-lg flex items-center justify-center mb-4">
+         <i class="fas fa-flask text-xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-viral-blue">
+         Post Alchemy
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Transform your ideas into viral LinkedIn posts.
+        </p>
+       </a>
+       <a class="group bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-green-500 transition-all" href="hashtags-generate.html">
+        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mb-4">
+         <i class="fas fa-hashtag text-xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-green-500">
+         Hashtag Generator
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Discover trending hashtags that amplify your reach.
+        </p>
+       </a>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- FINAL CTA SECTION -->
+   <section class="py-20 bg-gradient-to-r from-viral-purple to-viral-blue">
+    <div class="container mx-auto px-6 text-center">
+     <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+      Ready to Transform Your Engagement?
+     </h2>
+     <p class="text-xl text-purple-100 mb-8">
+      Start creating valuable LinkedIn comments today. No credit card required.
+     </p>
+     <a class="px-8 py-4 bg-white text-viral-purple font-bold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105" href="#generator-section">
+      <i class="fas fa-comments mr-2">
+      </i>
+      Generate Your First Comment
+     </a>
+    </div>
+   </section>
+  </main>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder">
+  </div>
+  <!-- Main Script -->
+  <script defer="" src="assets/js/main.js">
+  </script>
+  <!-- Page-specific script -->
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('generatorForm');
+            const postTextInput = document.getElementById('postTextInput');
+            const postTextError = document.getElementById('postTextError');
+            const loadingState = document.getElementById('loadingState');
+            const resultBox = document.getElementById('resultBox');
+            const generatedContent = document.getElementById('generatedContent');
+            const copyButton = document.getElementById('copyButton');
+            const copyButtonText = document.getElementById('copyButtonText');
+            const regenerateButton = document.getElementById('regenerateButton');
+            const charCount = document.getElementById('charCount');
+
+            // File Upload Logic
+            const uploadArea = document.getElementById('uploadArea');
+            const screenshotInput = document.getElementById('screenshotInput');
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            const removeFileButton = document.getElementById('removeFileButton');
+
+            uploadArea.addEventListener('click', () => screenshotInput.click());
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    screenshotInput.files = e.dataTransfer.files;
+                    updateFilePreview();
+                }
+            });
+            screenshotInput.addEventListener('change', updateFilePreview);
+            removeFileButton.addEventListener('click', () => {
+                screenshotInput.value = ''; // Clear the file input
+                updateFilePreview();
+            });
+
+            function updateFilePreview() {
+                if (screenshotInput.files.length > 0) {
+                    fileName.textContent = screenshotInput.files[0].name;
+                    filePreview.classList.remove('hidden');
+                    uploadArea.classList.add('hidden');
+                } else {
+                    filePreview.classList.add('hidden');
+                    uploadArea.classList.remove('hidden');
+                }
+            }
+
+            // Accordion Logic
+            const accordionContainer = document.getElementById('faq-accordion');
+            if(accordionContainer) {
+                accordionContainer.addEventListener('click', function(e) {
+                    const button = e.target.closest('.accordion-button');
+                    if (!button) return;
+                    const isActive = button.classList.contains('active');
+                    accordionContainer.querySelectorAll('.accordion-button').forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.nextElementSibling.style.maxHeight = null;
+                    });
+                    if (!isActive) {
+                        button.classList.add('active');
+                        button.nextElementSibling.style.maxHeight = button.nextElementSibling.scrollHeight + 'px';
+                    }
+                });
+            }
+
+            // Form Submission Logic
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!postTextInput.value.trim()) {
+                    postTextError.style.display = 'block';
+                    postTextInput.classList.add('border-red-500');
+                    postTextInput.focus();
+                    return;
+                } else {
+                    postTextError.style.display = 'none';
+                    postTextInput.classList.remove('border-red-500');
+                }
+
+                loadingState.style.display = 'block';
+                resultBox.style.display = 'none';
+
+                setTimeout(() => {
+                    const sampleComment = `Great insights! This really resonates with what I've been observing. The point about [topic] is something many professionals overlook, but it's critical.\n\nI'd add that this approach also opens doors for innovation in [related area]. Have you seen similar patterns in other markets?\n\nThanks for sharing this valuable perspective!`;
+                    generatedContent.textContent = sampleComment;
+                    updateCharCount(sampleComment);
+                    loadingState.style.display = 'none';
+                    resultBox.style.display = 'block';
+                }, 2000);
+            });
+
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(generatedContent.textContent).then(() => {
+                    copyButtonText.textContent = 'Copied!';
+                    setTimeout(() => { copyButtonText.textContent = 'Copy'; }, 2000);
+                });
+            });
+
+            regenerateButton.addEventListener('click', () => form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })));
+
+            function updateCharCount(text) {
+                const count = text.length;
+                charCount.textContent = `${count} characters`;
+                charCount.classList.toggle('text-red-500', count > 700); // LinkedIn comment limit is ~700 chars
+            }
+        });
+  </script>
+ </body>
+</html>

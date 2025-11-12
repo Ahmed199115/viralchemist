@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   LinkedIn Post Alchemy - AI LinkedIn Post Generator | ViralChemist
+  </title>
+  <meta content="Generate viral, human-like LinkedIn posts in seconds with ViralChemist's AI Post Alchemy. Our free tool helps you create engaging content to boost your professional brand." name="description"/>
+  <meta content="AI LinkedIn post generator, free LinkedIn content generator, LinkedIn post ideas, how to create engaging LinkedIn posts, best AI tool for LinkedIn content, write LinkedIn posts faster" name="keywords"/>
+  <meta content="ViralChemist" name="author"/>
+  <!-- Preconnect to external domains -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://cdnjs.cloudflare.com" rel="preconnect"/>
+  <!-- Preload critical CSS -->
+  <link as="style" href="assets/css/optimize.css" rel="preload"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+  <link href="assets/css/optimize.css" rel="stylesheet"/>
+  <!-- SEO: JSON-LD Structured Data for the Service -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "AI Content Generation",
+      "provider": {
+        "@type": "Organization",
+        "name": "ViralChemist"
+      },
+      "name": "LinkedIn Post Alchemy",
+      "description": "An AI-powered tool to generate authentic and engaging LinkedIn posts instantly.",
+      "url": "https://your-domain.com/post-alchemy.html"
+    }
+  </script>
+  <script>
+   tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'viral-blue': '#3b82f6',
+                        'viral-purple': '#8b5cf6',
+                        'viral-dark': '#0f172a',
+                    }
+                }
+            }
+        }
+  </script>
+  <style>
+   .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .accordion-button i { transition: transform 0.3s ease; }
+        .accordion-button.active i { transform: rotate(180deg); }
+        .form-error {
+            display: none;
+            color: #ef4444; /* red-500 */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+  </style>
+  <link href="https://viralchemist.com/post-alchemy.html" rel="canonical"/>
+ </head>
+ <body class="font-inter bg-gray-50 dark:bg-viral-dark text-gray-900 dark:text-gray-200 min-h-screen flex flex-col">
+  <!-- Header Placeholder -->
+  <header id="header-placeholder">
+  </header>
+  <main class="flex-grow">
+   <!-- HERO SECTION -->
+   <section class="relative overflow-hidden py-20 pt-32 bg-gradient-to-br from-viral-blue/5 to-viral-purple/5 dark:from-viral-blue/10 dark:to-viral-purple/10">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+       Turn Your Ideas into Viral
+       <span class="bg-gradient-to-r from-viral-blue to-viral-purple bg-clip-text text-transparent">
+        LinkedIn Posts
+       </span>
+      </h1>
+      <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+       Generate authentic, engaging LinkedIn posts with AI — instantly. No sign-up required for your first generation.
+      </p>
+      <a class="px-8 py-4 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-bold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105" href="#generator-section">
+       <i class="fas fa-arrow-down mr-2">
+       </i>
+       Try It Now
+      </a>
+     </div>
+    </div>
+   </section>
+   <!-- GENERATOR BOX SECTION -->
+   <section class="py-16" id="generator-section">
+    <div class="container mx-auto px-6">
+     <div class="max-w-3xl mx-auto">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+       <div class="flex items-center space-x-3 mb-6">
+        <div class="w-10 h-10 bg-gradient-to-br from-viral-blue to-viral-purple rounded-lg flex items-center justify-center">
+         <i class="fas fa-sparkles text-white">
+         </i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+         Start Creating
+        </h2>
+       </div>
+       <form class="space-y-5" id="generatorForm">
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="topicInput">
+          Your Topic or Idea
+         </label>
+         <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue focus:border-transparent outline-none" id="topicInput" placeholder="e.g., 'The future of remote work'" type="text"/>
+         <p class="form-error" id="topicError">
+          Please enter a topic or idea for your post.
+         </p>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="goalSelect">
+          Goal
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue focus:border-transparent outline-none" id="goalSelect">
+          <option value="auto">
+           Auto (Let AI Decide)
+          </option>
+          <option value="engagement">
+           Boost Engagement
+          </option>
+          <option value="thought-leadership">
+           Establish Thought Leadership
+          </option>
+          <option value="awareness">
+           Build Brand Awareness
+          </option>
+          <option value="education">
+           Share Knowledge / Educate
+          </option>
+          <option value="inspiration">
+           Inspire &amp; Motivate
+          </option>
+          <option value="storytelling">
+           Tell a Story
+          </option>
+         </select>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="toneSelect">
+          Tone
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue focus:border-transparent outline-none" id="toneSelect">
+          <option value="auto">
+           Auto (Let AI Decide)
+          </option>
+          <option value="professional">
+           Professional
+          </option>
+          <option value="insightful">
+           Insightful
+          </option>
+          <option value="friendly">
+           Friendly &amp; Conversational
+          </option>
+          <option value="motivational">
+           Motivational
+          </option>
+          <option value="analytical">
+           Analytical
+          </option>
+          <option value="humorous">
+           Humorous
+          </option>
+          <option value="empathetic">
+           Empathetic
+          </option>
+         </select>
+        </div>
+        <button class="w-full px-6 py-3 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-bold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2" type="submit">
+         <i class="fas fa-wand-magic-sparkles">
+         </i>
+         <span>
+          Generate Post
+         </span>
+        </button>
+       </form>
+       <div class="hidden mt-8 text-center" id="loadingState">
+        <p class="text-gray-700 dark:text-gray-300 font-semibold">
+         Generating your post...
+        </p>
+       </div>
+       <div class="hidden mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700" id="resultBox">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+         Your Generated Post
+        </h3>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg mb-4 border border-gray-200 dark:border-gray-600 whitespace-pre-wrap" id="generatedContent">
+        </div>
+        <div class="flex items-center justify-between">
+         <div class="flex space-x-3">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors flex items-center space-x-2" id="copyButton">
+           <i class="fas fa-copy">
+           </i>
+           <span id="copyButtonText">
+            Copy
+           </span>
+          </button>
+          <button class="px-4 py-2 bg-viral-blue hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center space-x-2" id="regenerateButton">
+           <i class="fas fa-redo">
+           </i>
+           <span>
+            Regenerate
+           </span>
+          </button>
+         </div>
+         <div class="text-sm text-gray-600 dark:text-gray-400 font-medium" id="charCount">
+          0 characters
+         </div>
+        </div>
+       </div>
+       <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-4">
+        <i class="fas fa-lock mr-1">
+        </i>
+        No sign-up required for your first generation.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- WHY CHOOSE VIRALCHEMIST -->
+   <section class="py-16 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        Why Choose ViralChemist?
+       </h2>
+       <p class="text-lg text-gray-700 dark:text-gray-300">
+        Our AI is specifically trained on LinkedIn's unique ecosystem to deliver posts that resonate, engage, and convert.
+       </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-viral-blue to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-user-tie text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Human-like Tone
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Posts that feel authentic and genuine, written in your voice while maintaining professional quality.
+        </p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-viral-purple to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-chart-line text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Optimized for LinkedIn
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Every post is crafted following the latest LinkedIn algorithms to maximize reach and visibility.
+        </p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+         <i class="fas fa-hashtag text-2xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+         Smart Hashtags Built-In
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Automatically includes relevant, trending hashtags to increase discoverability.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- HOW IT WORKS -->
+   <section class="py-16 bg-gray-50 dark:bg-viral-dark">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+       How It Works in 3 Simple Steps
+      </h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-viral-blue to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         1
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        Enter Your Idea
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Simply type your topic, idea, or key message.
+       </p>
+      </div>
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-viral-purple to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         2
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        Our AI Crafts It
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Our advanced AI analyzes trends and creates an engaging, viral-optimized post.
+       </p>
+      </div>
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="text-3xl font-bold text-white">
+         3
+        </span>
+       </div>
+       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        Copy &amp; Go Viral
+       </h3>
+       <p class="text-gray-700 dark:text-gray-400">
+        Copy your post with one click and publish directly to LinkedIn.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- WHAT MAKES US DIFFERENT -->
+   <section class="py-16 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+       What Makes Us Different?
+      </h2>
+     </div>
+     <div class="overflow-x-auto">
+      <table class="w-full min-w-max">
+       <thead>
+        <tr class="border-b-2 border-gray-300 dark:border-gray-700">
+         <th class="text-left py-4 px-4 font-bold text-gray-900 dark:text-white">
+          Feature
+         </th>
+         <th class="text-center py-4 px-4 font-bold text-gray-900 dark:text-white">
+          ViralChemist
+         </th>
+         <th class="text-center py-4 px-4 font-bold text-gray-700 dark:text-gray-400">
+          Other Tools
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          Humanized Tone
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-times text-red-500 text-xl">
+          </i>
+         </td>
+        </tr>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          LinkedIn Focused
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-exclamation-circle text-yellow-500 text-xl">
+          </i>
+         </td>
+        </tr>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+         <td class="py-4 px-4 text-gray-800 dark:text-gray-300">
+          No Login Required
+         </td>
+         <td class="text-center">
+          <i class="fas fa-check text-green-500 text-xl">
+          </i>
+         </td>
+         <td class="text-center">
+          <i class="fas fa-times text-red-500 text-xl">
+          </i>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+   <!-- FAQ SECTION -->
+   <section class="py-16 bg-gray-50 dark:bg-viral-dark">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-12 text-center">
+       Frequently Asked Questions
+      </h2>
+      <div class="space-y-4" id="faq-accordion">
+       <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
+        <button class="accordion-button w-full px-6 py-4 text-left font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+         <span>
+          Is ViralChemist free to use?
+         </span>
+         <i class="fas fa-chevron-down">
+         </i>
+        </button>
+        <div class="accordion-content px-6 pb-4 text-gray-700 dark:text-gray-300">
+         <p>
+          Yes! You can generate your first LinkedIn post completely free without any sign-up required. We offer a generous free tier to let you experience the power of ViralChemist.
+         </p>
+        </div>
+       </div>
+       <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
+        <button class="accordion-button w-full px-6 py-4 text-left font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+         <span>
+          How is this different from ChatGPT?
+         </span>
+         <i class="fas fa-chevron-down">
+         </i>
+        </button>
+        <div class="accordion-content px-6 pb-4 text-gray-700 dark:text-gray-300">
+         <p>
+          While ChatGPT is a general-purpose AI, ViralChemist is specifically fine-tuned for LinkedIn content. Our AI is trained on thousands of viral posts and understands the platform's algorithm, resulting in higher engagement.
+         </p>
+        </div>
+       </div>
+       <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
+        <button class="accordion-button w-full px-6 py-4 text-left font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+         <span>
+          Will my posts be detected as AI-generated?
+         </span>
+         <i class="fas fa-chevron-down">
+         </i>
+        </button>
+        <div class="accordion-content px-6 pb-4 text-gray-700 dark:text-gray-300">
+         <p>
+          No. ViralChemist is designed to create 100% human-like content. Our advanced algorithms ensure that posts read naturally and authentically, bypassing AI detectors.
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- EXPLORE MORE TOOLS -->
+   <section class="py-16">
+    <div class="container mx-auto px-6">
+     <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-12 text-center">
+       Explore More Tools
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <a class="group bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-viral-purple transition-all" href="comment-alchemy.html">
+        <div class="w-12 h-12 bg-gradient-to-br from-viral-purple to-purple-600 rounded-lg flex items-center justify-center mb-4">
+         <i class="fas fa-comments text-xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-viral-purple">
+         Comment Alchemy
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Generate insightful comments that build relationships.
+        </p>
+       </a>
+       <a class="group bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-green-500 transition-all" href="hashtags-generate.html">
+        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mb-4">
+         <i class="fas fa-hashtag text-xl text-white">
+         </i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-green-500">
+         Hashtag Generator
+        </h3>
+        <p class="text-gray-700 dark:text-gray-400">
+         Discover trending hashtags that amplify your reach.
+        </p>
+       </a>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- FINAL CTA SECTION -->
+   <section class="py-20 bg-gradient-to-r from-viral-blue to-viral-purple">
+    <div class="container mx-auto px-6 text-center">
+     <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+      You've Seen the Magic. Now It's Your Turn.
+     </h2>
+     <p class="text-xl text-blue-100 mb-8">
+      Start creating viral LinkedIn posts today. No credit card required.
+     </p>
+     <a class="px-8 py-4 bg-white text-viral-blue font-bold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105" href="#generator-section">
+      <i class="fas fa-rocket mr-2">
+      </i>
+      Generate Your First Post
+     </a>
+    </div>
+   </section>
+  </main>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder">
+  </div>
+  <!-- Main Script -->
+  <script defer="" src="assets/js/main.js">
+  </script>
+  <!-- Page-specific script -->
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('generatorForm');
+            const topicInput = document.getElementById('topicInput');
+            const topicError = document.getElementById('topicError');
+            const loadingState = document.getElementById('loadingState');
+            const resultBox = document.getElementById('resultBox');
+            const generatedContent = document.getElementById('generatedContent');
+            const copyButton = document.getElementById('copyButton');
+            const copyButtonText = document.getElementById('copyButtonText');
+            const regenerateButton = document.getElementById('regenerateButton');
+            const charCount = document.getElementById('charCount');
+
+            // Accordion Logic
+            const accordionContainer = document.getElementById('faq-accordion');
+            if(accordionContainer) {
+                accordionContainer.addEventListener('click', function(e) {
+                    const button = e.target.closest('.accordion-button');
+                    if (!button) return;
+
+                    const allButtons = accordionContainer.querySelectorAll('.accordion-button');
+                    const content = button.nextElementSibling;
+
+                    const isActive = button.classList.contains('active');
+
+                    allButtons.forEach(otherButton => {
+                        otherButton.classList.remove('active');
+                        otherButton.nextElementSibling.style.maxHeight = null;
+                    });
+
+                    if (!isActive) {
+                        button.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            }
+
+            // Form Submission Logic
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!topicInput.value.trim()) {
+                    topicError.style.display = 'block';
+                    topicInput.classList.add('border-red-500');
+                    topicInput.focus();
+                    return;
+                } else {
+                    topicError.style.display = 'none';
+                    topicInput.classList.remove('border-red-500');
+                }
+
+                loadingState.style.display = 'block';
+                resultBox.style.display = 'none';
+
+                setTimeout(() => {
+                    const topic = topicInput.value;
+                    const samplePost = `🚀 Just had a breakthrough thought on ${topic}...\n\nThe biggest mistake people make is viewing it as a task, not a mindset. Here's a simple shift:\n\n1️⃣ From "What do I get?" to "What can I give?"\n2️⃣ From "Seeking validation" to "Providing value"\n3️⃣ From "Broadcasting" to "Building community"\n\nThis small change in perspective can lead to massive results.\n\nWhat's your take on this? I'd love to hear your thoughts in the comments! 👇\n\n#${topic.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '')} #ProfessionalGrowth #Mindset #LinkedIn`;
+                    
+                    generatedContent.textContent = samplePost;
+                    updateCharCount(samplePost);
+
+                    loadingState.style.display = 'none';
+                    resultBox.style.display = 'block';
+                }, 2000);
+            });
+
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(generatedContent.textContent).then(() => {
+                    copyButtonText.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButtonText.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+
+            regenerateButton.addEventListener('click', function() {
+                form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            });
+
+            function updateCharCount(text) {
+                const count = text.length;
+                charCount.textContent = `${count} characters`;
+                charCount.classList.toggle('text-red-500', count > 3000);
+            }
+        });
+  </script>
+ </body>
+</html>

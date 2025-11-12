@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Dashboard - ViralChemist | AI SEO Article Generator
+  </title>
+  <meta content="ViralChemist Dashboard - AI-powered SEO article generation with advanced analytics and content optimization." name="description"/>
+  <meta content="noindex, nofollow" name="robots"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://cdnjs.cloudflare.com" rel="preconnect"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+  <link href="assets/css/optimize.css" rel="stylesheet"/>
+  <script>
+   tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        'viral-blue': '#3b82f6',
+                        'viral-purple': '#8b5cf6',
+                        'viral-dark': '#0f172a',
+                    }
+                }
+            }
+        }
+  </script>
+  <style>
+   .sidebar { transition: transform 0.3s ease-in-out; }
+        .main-content { transition: margin-left 0.3s ease-in-out; }
+        .page-section { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-item.active { background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding-left: calc(1rem - 4px); color: #3b82f6; }
+        .nav-item.active i { color: #3b82f6; }
+        .result-section { max-height: 0; overflow: hidden; transition: max-height 0.8s ease-in-out; }
+        .result-section.show { max-height: 5000px; }
+        .tab-button.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
+        .loading-spinner { border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: white; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <link href="https://viralchemist.com/dashboard.html" rel="canonical"/>
+ </head>
+ <body class="font-inter bg-gray-50 dark:bg-viral-dark min-h-screen">
+  <aside class="fixed left-0 top-0 w-64 h-screen bg-gray-900 dark:bg-gray-950 text-white z-50 sidebar -translate-x-full lg:translate-x-0" id="sidebar">
+   <div class="p-6">
+    <div class="flex items-center justify-between mb-8">
+     <a class="flex items-center space-x-2 group" href="index.html">
+      <span class="text-2xl text-viral-blue group-hover:animate-spin">
+       🧪
+      </span>
+      <span class="text-xl font-bold">
+       ViralChemist
+      </span>
+     </a>
+     <button class="lg:hidden text-gray-400 hover:text-white" id="sidebar-close-btn">
+      <i class="fas fa-times text-2xl">
+      </i>
+     </button>
+    </div>
+    <nav class="space-y-2">
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="overview">
+      <i class="fas fa-chart-pie w-5 mr-3">
+      </i>
+      <span>
+       Overview
+      </span>
+     </button>
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="article-generator">
+      <i class="fas fa-pen-fancy w-5 mr-3">
+      </i>
+      <span>
+       Article Generator
+      </span>
+     </button>
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="history">
+      <i class="fas fa-history w-5 mr-3">
+      </i>
+      <span>
+       History
+      </span>
+     </button>
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="analytics">
+      <i class="fas fa-chart-bar w-5 mr-3">
+      </i>
+      <span>
+       Analytics
+      </span>
+     </button>
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="settings">
+      <i class="fas fa-cog w-5 mr-3">
+      </i>
+      <span>
+       Settings
+      </span>
+     </button>
+    </nav>
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-800">
+     <button class="logout-btn w-full px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium flex items-center justify-center">
+      <i class="fas fa-sign-out-alt mr-2">
+      </i>
+      Logout
+     </button>
+    </div>
+   </div>
+  </aside>
+  <div class="main-content lg:ml-64">
+   <div class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" id="main-content-overlay">
+   </div>
+   <header class="fixed top-0 left-0 lg:left-64 right-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex items-center justify-between px-4 sm:px-8 py-4">
+     <div class="flex items-center">
+      <button class="lg:hidden mr-4 text-gray-600 dark:text-gray-300" id="menu-toggle-btn">
+       <i class="fas fa-bars text-xl">
+       </i>
+      </button>
+      <div>
+       <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white" id="pageTitle">
+        Overview
+       </h1>
+       <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400" id="pageSubtitle">
+        Welcome back
+       </p>
+      </div>
+     </div>
+     <div class="flex items-center space-x-4">
+      <button class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-yellow-400" id="theme-toggle">
+       <i class="fas fa-sun" id="theme-icon">
+       </i>
+      </button>
+      <div class="relative group">
+       <button class="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+        <img alt="User Avatar" class="w-8 h-8 rounded-full" src="https://i.pravatar.cc/40"/>
+        <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400 text-xs hidden sm:block">
+        </i>
+       </button>
+       <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+        <a class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" href="#">
+         Profile
+        </a>
+        <button class="logout-btn block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+         Logout
+        </button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </header>
+   <main class="pt-24 pb-12 px-4 sm:px-8">
+    <!-- OVERVIEW PAGE -->
+    <div class="page-section" id="overview-page">
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+       <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+        Total Articles
+       </p>
+       <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        24
+       </p>
+      </div>
+      <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+       <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+        Avg SEO Score
+       </p>
+       <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        87
+       </p>
+      </div>
+      <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+       <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+        Total Words
+       </p>
+       <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        45K
+       </p>
+      </div>
+      <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+       <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+        API Usage
+       </p>
+       <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        68%
+       </p>
+      </div>
+     </div>
+     <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+       Recent Articles
+      </h2>
+      <div class="space-y-4">
+       <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+        <div>
+         <h3 class="font-semibold text-gray-900 dark:text-white">
+          How to Master SEO in 2025
+         </h3>
+         <p class="text-sm text-gray-600 dark:text-gray-400">
+          Created 2 hours ago • 2,500 words
+         </p>
+        </div>
+        <div class="flex items-center space-x-4">
+         <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+          92/100
+         </span>
+         <button class="text-viral-blue hover:text-blue-600">
+          <i class="fas fa-eye">
+          </i>
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- ARTICLE GENERATOR PAGE -->
+    <div class="page-section hidden" id="article-generator-page">
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8">
+       <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        Article Generator
+       </h2>
+       <form class="space-y-6" id="articleGeneratorForm">
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Target Keyword
+         </label>
+         <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue" placeholder="e.g., 'best SEO practices 2025'" required="" type="text"/>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Article Type
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+          <option>
+           Blog Post
+          </option>
+          <option>
+           Guide
+          </option>
+         </select>
+        </div>
+        <div>
+         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Tone
+         </label>
+         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+          <option>
+           Professional
+          </option>
+          <option>
+           Friendly
+          </option>
+         </select>
+        </div>
+        <div class="flex items-center">
+         <input class="w-4 h-4 rounded text-viral-blue focus:ring-viral-blue" id="includeImages" type="checkbox"/>
+         <label class="ml-2 text-sm text-gray-700 dark:text-gray-300" for="includeImages">
+          Generate images with Gemini API
+         </label>
+        </div>
+        <button class="w-full py-3 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center justify-center" id="generateBtn" type="submit">
+         Generate Article
+         <i class="fas fa-arrow-right ml-2">
+         </i>
+        </button>
+       </form>
+      </div>
+      <div class="lg:col-span-1 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 sticky top-24">
+       <h3 class="text-lg font-bold text-center mb-6 text-gray-900 dark:text-white">
+        SEO Score
+       </h3>
+       <!-- SEO Score content from original file -->
+      </div>
+     </div>
+     <div class="hidden mt-8 bg-white dark:bg-gray-900 rounded-lg p-8 border border-gray-200 dark:border-gray-800" id="processingStatus">
+      <h3 class="text-lg font-semibold mb-6 text-gray-900 dark:text-white">
+       Processing Your Article...
+      </h3>
+      <div class="space-y-3">
+       <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" id="step-search">
+        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-white">
+         <i class="fas fa-search">
+         </i>
+        </div>
+        <span class="text-gray-700 dark:text-gray-300">
+         Searching Google (Serper API)
+        </span>
+       </div>
+       <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" id="step-analyze">
+        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-white">
+         <i class="fas fa-brain">
+         </i>
+        </div>
+        <span class="text-gray-700 dark:text-gray-300">
+         Analyzing Content (ChatGPT)
+        </span>
+       </div>
+       <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" id="step-generate">
+        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-white">
+         <i class="fas fa-pen">
+         </i>
+        </div>
+        <span class="text-gray-700 dark:text-gray-300">
+         Generating Article (OpenAI)
+        </span>
+       </div>
+       <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" id="step-images">
+        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-white">
+         <i class="fas fa-image">
+         </i>
+        </div>
+        <span class="text-gray-700 dark:text-gray-300">
+         Generating Images (Gemini)
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="result-section mt-8" id="resultSection">
+      <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8">
+       <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        Generated Article
+       </h2>
+       <div class="flex space-x-1 border-b border-gray-200 dark:border-gray-700 mb-6">
+        <button class="tab-button active py-2 px-4 font-medium" data-tab="article">
+         Article
+        </button>
+        <button class="tab-button py-2 px-4 font-medium text-gray-500 dark:text-gray-400" data-tab="images">
+         Images
+        </button>
+        <button class="tab-button py-2 px-4 font-medium text-gray-500 dark:text-gray-400" data-tab="meta">
+         Meta Tags
+        </button>
+       </div>
+       <div class="tab-content prose dark:prose-invert max-w-none" data-tab-content="article">
+        <p>
+         Your generated article will appear here...
+        </p>
+       </div>
+       <div class="tab-content" data-tab-content="images" style="display: none;">
+        <p>
+         Generated images will appear here...
+        </p>
+       </div>
+       <div class="tab-content" data-tab-content="meta" style="display: none;">
+        <p>
+         Generated meta tags will appear here...
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- HISTORY PAGE -->
+    <div class="page-section hidden" id="history-page">
+     <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+       Article History
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 mt-4">
+       A list of your previously generated articles will appear here.
+      </p>
+     </div>
+    </div>
+    <!-- ANALYTICS PAGE -->
+    <div class="page-section hidden" id="analytics-page">
+     <div class="bg-white dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-800">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+       Analytics
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 mt-4">
+       Performance charts and data for your articles will be displayed here.
+      </p>
+     </div>
+    </div>
+    <!-- SETTINGS PAGE -->
+    <div class="page-section hidden" id="settings-page">
+     <div class="bg-white dark:bg-gray-900 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+       Settings
+      </h2>
+      <div class="space-y-6">
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+         OpenAI API Key
+        </label>
+        <input class="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800" placeholder="sk-..." type="password"/>
+       </div>
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+         Serper API Key
+        </label>
+        <input class="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800" placeholder="Your Serper key..." type="password"/>
+       </div>
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+         Gemini API Key
+        </label>
+        <input class="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800" placeholder="Your Gemini key..." type="password"/>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <!-- Main Scripts -->
+  <script defer="" src="assets/js/main.js">
+  </script>
+  <script defer="" src="assets/js/dashboard.js">
+  </script>
+ </body>
+</html>

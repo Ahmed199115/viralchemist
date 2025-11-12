@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Login - ViralChemist | AI SEO Article Generator
+  </title>
+  <meta content="Login to your ViralChemist account to access the AI article generator and manage your content." name="description"/>
+  <meta content="login, SEO article generator, AI content, ViralChemist" name="keywords"/>
+  <meta content="ViralChemist" name="author"/>
+  <!-- Preconnect to external domains -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://cdnjs.cloudflare.com" rel="preconnect"/>
+  <!-- Preload critical CSS -->
+  <link as="style" href="assets/css/optimize.css" rel="preload"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+  <link href="assets/css/optimize.css" rel="stylesheet"/>
+  <!-- SEO: JSON-LD Structured Data -->
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Login to ViralChemist",
+      "description": "Login to your ViralChemist account to access the AI article generator and manage your content.",
+      "url": "https://your-domain.com/login.html"
+    }
+  </script>
+  <script>
+   tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        'viral-blue': '#3b82f6',
+                        'viral-purple': '#8b5cf6',
+                        'viral-dark': '#0f172a',
+                    }
+                }
+            }
+        }
+  </script>
+  <style>
+   .login-container { animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <link href="https://viralchemist.com/login.html" rel="canonical"/>
+ </head>
+ <body class="bg-gray-50 dark:bg-viral-dark font-inter min-h-screen flex flex-col">
+  <!-- Header Placeholder -->
+  <header id="header-placeholder">
+  </header>
+  <main class="flex-1 flex items-center justify-center pt-24 pb-12 px-4">
+   <div class="login-container w-full max-w-md">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-800">
+     <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-viral-blue to-viral-purple rounded-lg mb-4">
+       <i class="fas fa-lock text-white text-2xl">
+       </i>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+       Welcome Back
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400">
+       Login to access your dashboard.
+      </p>
+     </div>
+     <div class="space-y-3 mb-6">
+      <button class="w-full px-4 py-3 rounded-lg flex items-center justify-center space-x-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+       <i class="fab fa-google text-red-500">
+       </i>
+       <span>
+        Continue with Google
+       </span>
+      </button>
+      <button class="w-full px-4 py-3 rounded-lg flex items-center justify-center space-x-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+       <i class="fab fa-github text-gray-800 dark:text-white">
+       </i>
+       <span>
+        Continue with GitHub
+       </span>
+      </button>
+     </div>
+     <div class="relative my-6">
+      <div class="absolute inset-0 flex items-center">
+       <div class="w-full border-t border-gray-300 dark:border-gray-600">
+       </div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+       <span class="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
+        Or with email
+       </span>
+      </div>
+     </div>
+     <form class="space-y-4" id="loginForm">
+      <div>
+       <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="email">
+        Email Address
+       </label>
+       <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue focus:border-transparent outline-none" id="email" name="email" placeholder="you@example.com" required="" type="email"/>
+      </div>
+      <div>
+       <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="password">
+        Password
+       </label>
+       <div class="relative">
+        <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue focus:border-transparent outline-none" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" id="password-toggle" type="button">
+         <i class="fas fa-eye" id="password-icon">
+         </i>
+        </button>
+       </div>
+      </div>
+      <div class="flex items-center justify-between text-sm">
+       <label class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 cursor-pointer">
+        <input class="w-4 h-4 rounded border-gray-300 text-viral-blue focus:ring-viral-blue" id="rememberMe" type="checkbox"/>
+        <span>
+         Remember me
+        </span>
+       </label>
+       <a class="text-viral-blue hover:text-blue-600 font-medium" href="#">
+        Forgot password?
+       </a>
+      </div>
+      <div class="hidden p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm" id="error-message">
+      </div>
+      <button class="w-full px-4 py-3 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2" id="login-btn" type="submit">
+       <span id="btn-text">
+        Sign In
+       </span>
+       <span class="hidden loading-spinner" id="btn-spinner">
+       </span>
+      </button>
+     </form>
+     <p class="text-center text-gray-600 dark:text-gray-400 mt-6 text-sm">
+      Don't have an account?
+      <a class="text-viral-blue hover:text-blue-600 font-semibold" href="signup.html">
+       Sign up here
+      </a>
+     </p>
+    </div>
+    <p class="text-center text-gray-500 dark:text-gray-400 text-xs mt-6">
+     By signing in, you agree to our
+     <a class="text-viral-blue hover:text-blue-600" href="terms-of-service.html">
+      Terms
+     </a>
+     and
+     <a class="text-viral-blue hover:text-blue-600" href="privacy-policy.html">
+      Privacy Policy
+     </a>
+     .
+    </p>
+   </div>
+  </main>
+  <!-- Main Script -->
+  <script defer="" src="assets/js/main.js">
+  </script>
+  <!-- Page-specific script -->
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('login-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('btn-spinner');
+            const errorMessage = document.getElementById('error-message');
+            const passwordToggle = document.getElementById('password-toggle');
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('password-icon');
+
+            // Password visibility toggle
+            passwordToggle.addEventListener('click', () => {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                }
+            });
+
+            // Form submission simulation
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Hide previous error
+                errorMessage.classList.add('hidden');
+                errorMessage.textContent = '';
+
+                // Show loading state
+                loginBtn.disabled = true;
+                btnText.textContent = 'Signing In...';
+                btnSpinner.classList.remove('hidden');
+
+                // Simulate API call
+                setTimeout(() => {
+                    // Hide loading state
+                    loginBtn.disabled = false;
+                    btnText.textContent = 'Sign In';
+                    btnSpinner.classList.add('hidden');
+
+                    // Simulate a successful login for demonstration
+                    // In a real app, you would check credentials here
+                    const email = document.getElementById('email').value;
+                    if (email) {
+                        // On success, redirect to dashboard
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        // On failure, show an error
+                        errorMessage.textContent = 'Invalid email or password. Please try again.';
+                        errorMessage.classList.remove('hidden');
+                    }
+                }, 1500);
+            });
+        });
+  </script>
+ </body>
+</html>
