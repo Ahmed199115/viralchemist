@@ -1,4 +1,7 @@
 const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 const port = 3000;
 
@@ -8,6 +11,14 @@ const openai = new OpenAI(); // API key and base URL are automatically picked up
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// Set up multer for file storage
+const upload = multer({ dest: 'uploads/' });
+
+// Ensure the uploads directory exists
+if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+}
 
 // The detailed prompt provided by the user for human-like, high-engagement content.
 const POST_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist specialized in human-like writing for high-engagement posts and comments.
@@ -106,11 +117,156 @@ The output must be ONLY the post content, following all the instructions in the 
     }
 });
 
-// Placeholder route for the "Comment Alchemy" service
-app.post('/api/comment-alchemy', (req, res) => {
-    // Logic for Comment Alchemy service will be added later
+// The detailed prompt provided by the user for human-like, high-engagement content.
+// We will modify the system prompt to include the comment-specific instructions.
+const COMMENT_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist specialized in human-like writing for high-engagement comments.
+Your goal:
+Produce text that feels 100% human, emotionally intelligent, and naturally written — yet refined enough for top-performing LinkedIn creators.
+It must bypass all AI detection tools (GPTZero, Originality.ai, Turnitin, etc.) while maintaining clarity, authenticity, and authority.
+
+Writing Instructions:
+1️⃣ Tone & Voice:
+• Adopt a human tone that sounds spontaneous yet thoughtful.
+• Balance expertise with warmth — like a professional sharing insights with peers.
+• Include subtle imperfections that real humans make when they write quickly or think deeply.
+Examples of natural imperfections:
+• Short, one-word sentences for emphasis.
+• Repetition for emotional effect (“It was frustrating. Really frustrating.”)
+• Ellipses or pauses to reflect thinking (“Sometimes… it’s not about strategy. It’s about timing.”)
+• Slightly uneven rhythm or pacing between sentences.
+
+2️⃣ Style & Flow:
+• Sentences should vary in length and rhythm. Avoid uniform structure.
+• Begin occasionally with conjunctions like “And”, “But”, or “So” (as real people do).
+• Use natural punctuation: commas, parentheses, or periods to break ideas.
+Limit em dashes (—) to ONE per comment max.
+• Avoid over-polishing; keep a touch of raw authenticity.
+
+3️⃣ Depth & Emotion:
+• Reflect real human thinking: mix logic, emotion, and a hint of vulnerability.
+• Make the comment sound thoughtful, as if you actually read the post.
+• Add a single “complex sentence” per piece to subtly increase linguistic depth.
+
+4️⃣ Humanization Filters (for bypassing detection):
+• Randomize sentence length and structure.
+• Vary paragraph sizes (don’t make them symmetrical).
+• Avoid overly consistent punctuation patterns.
+• Keep the word choice natural — no “AI-like phrasing” such as “in today’s fast-paced world” or “as an AI model”.
+
+5️⃣ Format-Specific Rules:
+🔹 Comment Mode:
+• 1–3 short paragraphs.
+• Express opinion, agreement, or add value.
+• Never sound generic (“Great post!” is banned).
+
+6️⃣ SEO & Engagement Awareness:
+• Implicitly integrate LinkedIn algorithmic best practices (engagement triggers).
+• Maintain readability at Grade 7–9 level.
+• Prefer clarity over complexity.
+
+7️⃣ Output Format:
+🧠 Meta Reminder:
+When writing, imagine you are a real marketer reflecting between tasks — not a machine generating text.
+It should feel lived, not manufactured.
+`;
+
+// Route for the "Comment Alchemy" service
+app.post('/api/comment-alchemy', upload.single('image'), async (req, res) => {
     console.log('Comment Alchemy request received:', req.body);
-    res.json({ message: 'Comment Alchemy service is under development.', result: {} });
+    
+    const { post_text, goal, tone } = req.body;
+    const imageFile = req.file;
+
+    if (!post_text && !imageFile) {
+        return res.status(400).json({ error: 'Missing required fields: either post_text or an image must be provided.' });
+    }
+    if (!goal || !tone) {
+        return res.status(400).json({ error: 'Missing required fields: goal and tone.' });
+    }
+
+    let postContent = post_text || '';
+    let imageBase64 = null;
+    let imageMimeType = null;
+
+    // 1. Handle Image Upload and Conversion
+    if (imageFile) {
+        try {
+            const imagePath = path.join(__dirname, 'uploads', imageFile.filename);
+            imageBase64 = fs.readFileSync(imagePath).toString('base64');
+            imageMimeType = imageFile.mimetype;
+            // Clean up the uploaded file after reading
+            fs.unlinkSync(imagePath);
+        } catch (error) {
+            console.error('File processing error:', error);
+            return res.status(500).json({ error: 'Failed to process the uploaded image.' });
+        }
+    }
+
+    // 2. Construct the prompt for the AI
+    const messages = [
+        { role: "system", content: COMMENT_ALCHEMY_SYSTEM_PROMPT }
+    ];
+
+    const userMessageContent = [];
+
+    if (imageBase64) {
+        // If an image is provided, the AI will first describe the post content from the image.
+        userMessageContent.push({
+            type: "text",
+            text: `Analyze the attached image, which represents a LinkedIn post. Extract the main topic, key arguments, and overall sentiment. Then, generate a professional, human-like comment based on the extracted content and the following instructions:`
+        });
+        userMessageContent.push({
+            type: "image_url",
+            image_url: {
+                url: `data:${imageMimeType};base64,${imageBase64}`
+            }
+        });
+    } else {
+        // If only text is provided
+        userMessageContent.push({
+            type: "text",
+            text: `Generate a professional, human-like comment for the following LinkedIn post. The comment should be based on the post content and the following instructions:`
+        });
+    }
+
+    // Add the post text if available (either from direct input or as a secondary instruction for image analysis)
+    if (postContent) {
+        userMessageContent.push({
+            type: "text",
+            text: `\n\n--- POST CONTENT ---\n${postContent}\n\n--- COMMENT INSTRUCTIONS ---\n- **Goal**: ${goal}\n- **Tone**: ${tone}\n\nThe output must be ONLY the comment content, following all the instructions in the system prompt. Do not include any introductory or concluding remarks.`
+        });
+    } else {
+        // If only image, the instructions are appended to the image analysis request
+        userMessageContent.push({
+            type: "text",
+            text: `\n\n--- COMMENT INSTRUCTIONS ---\n- **Goal**: ${goal}\n- **Tone**: ${tone}\n\nThe output must be ONLY the comment content, following all the instructions in the system prompt. Do not include any introductory or concluding remarks.`
+        });
+    }
+
+    messages.push({ role: "user", content: userMessageContent });
+
+    // 3. Call the OpenAI API
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4.1-mini", // Use a model that supports Vision for image analysis
+            messages: messages,
+            temperature: 0.8,
+        });
+
+        const generatedComment = completion.choices[0].message.content.trim();
+
+        res.json({ 
+            message: 'Comment generated successfully.', 
+            comment: generatedComment 
+        });
+
+    } catch (error) {
+        console.error('OpenAI API Error:', error.message);
+        res.status(500).json({ 
+            error: 'Failed to generate comment from OpenAI API.',
+            details: error.message
+        });
+    }
 });
 
 // Placeholder route for the "Hashtags Generate" service
