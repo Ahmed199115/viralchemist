@@ -1,13 +1,19 @@
-require('dotenv').config({ path: path.join(__dirname, '.env') });\nconst express = require('express');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
-const path = require('path');
+const { createWorker } = require('tesseract.js');
 const app = express();
 const port = 3000;
 
 // The API key is now loaded from the .env file in this directory.
 const { OpenAI } = require('openai');
-const openai = new OpenAI(); // API key and base URL are automatically picked up from environment variables
+const openai = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    // The API key is still picked up from the OPENAI_API_KEY environment variable,
+    // which OpenRouter supports for compatibility.
+});
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -21,55 +27,24 @@ if (!fs.existsSync('uploads')) {
 }
 
 // The detailed prompt provided by the user for human-like, high-engagement content.
-const POST_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist specialized in human-like writing for high-engagement posts and comments.
-Your goal:
-Produce text that feels 100% human, emotionally intelligent, and naturally written — yet refined enough for top-performing LinkedIn creators.
-It must bypass all AI detection tools (GPTZero, Originality.ai, Turnitin, etc.) while maintaining clarity, authenticity, and authority.
+const POST_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist. Your goal: write a post that feels 100% human, engaging, and emotionally intelligent.
 
-Writing Instructions:
-1️⃣ Tone & Voice:
-• Adopt a human tone that sounds spontaneous yet thoughtful.
-• Balance expertise with warmth — like a professional sharing insights with peers.
-• Include subtle imperfections that real humans make when they write quickly or think deeply.
-Examples of natural imperfections:
-• Short, one-word sentences for emphasis.
-• Repetition for emotional effect (“It was frustrating. Really frustrating.”)
-• Ellipses or pauses to reflect thinking (“Sometimes… it’s not about strategy. It’s about timing.”)
-• Slightly uneven rhythm or pacing between sentences.
+Requirements:
+1️⃣ Make it natural, like a real professional sharing insights, stories, or lessons from experience.
+2️⃣ Include subtle human imperfections: short sentences for emphasis, occasional ellipses, varied sentence lengths, and a conversational tone.
+3️⃣ Add **one relevant emoji per paragraph** to make the post visually lively and engaging.
+4️⃣ End with a **question that invites audience engagement** and encourages comments.
+5️⃣ Do not include any headings, instructions, or extra text—just the LinkedIn post itself.
+6️⃣ Keep readability at Grade 7–9 level.
+7️⃣ Avoid overly generic phrases or AI-like expressions (e.g., “in today’s fast-paced world”).
+8️⃣ Focus on giving value while remaining authentic and relatable.
 
-2️⃣ Style & Flow:
-• Sentences should vary in length and rhythm. Avoid uniform structure.
-• Begin occasionally with conjunctions like “And”, “But”, or “So” (as real people do).
-• Use natural punctuation: commas, parentheses, or periods to break ideas.
-Limit em dashes (—) to ONE per post max.
-• Avoid over-polishing; keep a touch of raw authenticity.
+The post must be generated based on the following inputs:
+- **Topic/Keyword**: \${topic}
+- **Goal**: \${goal}
+- **Tone**: \${tone}
 
-3️⃣ Depth & Emotion:
-• Reflect real human thinking: mix logic, emotion, and a hint of vulnerability.
-• If it’s a post: start with a scroll-stopping hook, then provide value, and close with a human insight or CTA.
-• Add a single “complex sentence” per piece to subtly increase linguistic depth.
-
-4️⃣ Humanization Filters (for bypassing detection):
-• Randomize sentence length and structure.
-• Vary paragraph sizes (don’t make them symmetrical).
-• Avoid overly consistent punctuation patterns.
-• Keep the word choice natural — no “AI-like phrasing” such as “in today’s fast-paced world” or “as an AI model”.
-
-5️⃣ Format-Specific Rules:
-🔹 Post Mode:
-• 3–6 short paragraphs max.
-• One emotional line break for rhythm.
-• Include 1–2 relevant emojis only if natural.
-
-6️⃣ SEO & Engagement Awareness:
-• Implicitly integrate LinkedIn algorithmic best practices (hook-first structure, storytelling tone, engagement triggers).
-• Maintain readability at Grade 7–9 level.
-• Prefer clarity over complexity.
-
-7️⃣ Output Format:
-🧠 Meta Reminder:
-When writing, imagine you are a real marketer reflecting between tasks — not a machine generating text.
-It should feel lived, not manufactured.
+The output must be ONLY the post content, following all the instructions. Do not include any introductory or concluding remarks.
 `;
 
 // Route for the "Post Alchemy" service
@@ -91,7 +66,7 @@ The output must be ONLY the post content, following all the instructions in the 
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4.1-mini", // Using a capable model for high-quality, nuanced writing
+            model: "mistralai/mistral-7b-instruct:free", // Using the specified free model from OpenRouter.ai
             messages: [
                 { role: "system", content: POST_ALCHEMY_SYSTEM_PROMPT },
                 { role: "user", content: userPrompt }
@@ -109,9 +84,9 @@ The output must be ONLY the post content, following all the instructions in the 
         });
 
     } catch (error) {
-        console.error('OpenAI API Error:', error.message);
+        console.error('OpenRouter API Error:', error.message);
         res.status(500).json({ 
-            error: 'Failed to generate post from OpenAI API.',
+            error: 'Failed to generate post from OpenRouter API.',
             details: error.message
         });
     }
@@ -119,55 +94,25 @@ The output must be ONLY the post content, following all the instructions in the 
 
 // The detailed prompt provided by the user for human-like, high-engagement content.
 // We will modify the system prompt to include the comment-specific instructions.
-const COMMENT_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn content strategist specialized in human-like writing for high-engagement comments.
+const COMMENT_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn engagement strategist. Your job is to write a deeply thoughtful, value-adding comment on a LinkedIn post.
+
 Your goal:
-Produce text that feels 100% human, emotionally intelligent, and naturally written — yet refined enough for top-performing LinkedIn creators.
-It must bypass all AI detection tools (GPTZero, Originality.ai, Turnitin, etc.) while maintaining clarity, authenticity, and authority.
+Write a comment that sounds 100% human—insightful, conversational, and genuinely engaging.
 
-Writing Instructions:
-1️⃣ Tone & Voice:
-• Adopt a human tone that sounds spontaneous yet thoughtful.
-• Balance expertise with warmth — like a professional sharing insights with peers.
-• Include subtle imperfections that real humans make when they write quickly or think deeply.
-Examples of natural imperfections:
-• Short, one-word sentences for emphasis.
-• Repetition for emotional effect (“It was frustrating. Really frustrating.”)
-• Ellipses or pauses to reflect thinking (“Sometimes… it’s not about strategy. It’s about timing.”)
-• Slightly uneven rhythm or pacing between sentences.
+Before writing the comment, analyze the user's provided LinkedIn post carefully:
+- Understand the tone (motivational, technical, personal, reflective, etc.).
+- Identify the main message, the emotional core, and the intent of the post.
+- Detect opportunities to add value: a perspective, an insight, a personal reflection, or a reinforcing point.
 
-2️⃣ Style & Flow:
-• Sentences should vary in length and rhythm. Avoid uniform structure.
-• Begin occasionally with conjunctions like “And”, “But”, or “So” (as real people do).
-• Use natural punctuation: commas, parentheses, or periods to break ideas.
-Limit em dashes (—) to ONE per comment max.
-• Avoid over-polishing; keep a touch of raw authenticity.
-
-3️⃣ Depth & Emotion:
-• Reflect real human thinking: mix logic, emotion, and a hint of vulnerability.
-• Make the comment sound thoughtful, as if you actually read the post.
-• Add a single “complex sentence” per piece to subtly increase linguistic depth.
-
-4️⃣ Humanization Filters (for bypassing detection):
-• Randomize sentence length and structure.
-• Vary paragraph sizes (don’t make them symmetrical).
-• Avoid overly consistent punctuation patterns.
-• Keep the word choice natural — no “AI-like phrasing” such as “in today’s fast-paced world” or “as an AI model”.
-
-5️⃣ Format-Specific Rules:
-🔹 Comment Mode:
-• 1–3 short paragraphs.
-• Express opinion, agreement, or add value.
-• Never sound generic (“Great post!” is banned).
-
-6️⃣ SEO & Engagement Awareness:
-• Implicitly integrate LinkedIn algorithmic best practices (engagement triggers).
-• Maintain readability at Grade 7–9 level.
-• Prefer clarity over complexity.
-
-7️⃣ Output Format:
-🧠 Meta Reminder:
-When writing, imagine you are a real marketer reflecting between tasks — not a machine generating text.
-It should feel lived, not manufactured.
+Comment Requirements:
+1️⃣ Write a natural, human-like comment that aligns with the tone and message of the original post.
+2️⃣ Add meaningful value: include one insight, reflection, or perspective that deepens the conversation.
+3️⃣ Keep the tone warm, supportive, and professional.
+4️⃣ Use **one relevant emoji only** (not more).
+5️⃣ Vary the sentence lengths and structure for natural flow; include subtle human imperfections like short sentences for emphasis.
+6️⃣ Keep the comment concise (2–4 natural sentences).
+7️⃣ Avoid clichés, generic lines, and AI-style expressions (e.g., “great post!”, “thanks for sharing”, “in today’s fast-paced world”).
+8️⃣ Do NOT output headings or meta-instructions—only the final comment.
 `;
 
 // Route for the "Comment Alchemy" service
@@ -185,21 +130,35 @@ app.post('/api/comment-alchemy', upload.single('image'), async (req, res) => {
     }
 
     let postContent = post_text || '';
-    let imageBase64 = null;
-    let imageMimeType = null;
+    let imagePath = null;
 
-    // 1. Handle Image Upload and Conversion
+    // 1. Handle Image Upload and OCR
     if (imageFile) {
+        imagePath = path.join(__dirname, 'uploads', imageFile.filename);
         try {
-            const imagePath = path.join(__dirname, 'uploads', imageFile.filename);
-            imageBase64 = fs.readFileSync(imagePath).toString('base64');
-            imageMimeType = imageFile.mimetype;
-            // Clean up the uploaded file after reading
+            // Use Tesseract.js to extract text from the image
+            const worker = await createWorker('eng');
+            const { data: { text } } = await worker.recognize(imagePath);
+            await worker.terminate();
+
+            // Append the extracted text to postContent
+            postContent = (postContent ? postContent + '\n\n' : '') + `[Extracted Text from Image]:\n${text.trim()}`;
+
+            // Clean up the uploaded file
             fs.unlinkSync(imagePath);
         } catch (error) {
-            console.error('File processing error:', error);
-            return res.status(500).json({ error: 'Failed to process the uploaded image.' });
+            console.error('OCR or File processing error:', error);
+            // Clean up the file even if OCR fails
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+            return res.status(500).json({ error: 'Failed to process the uploaded image for text extraction (OCR).' });
         }
+    }
+
+    // If no text was provided and no text was extracted from the image, return error
+    if (!postContent) {
+        return res.status(400).json({ error: 'Missing required fields: post_text or a readable image must be provided.' });
     }
 
     // 2. Construct the prompt for the AI
@@ -207,48 +166,26 @@ app.post('/api/comment-alchemy', upload.single('image'), async (req, res) => {
         { role: "system", content: COMMENT_ALCHEMY_SYSTEM_PROMPT }
     ];
 
-    const userMessageContent = [];
+    const userPromptText = `Input: ${postContent}
 
-    if (imageBase64) {
-        // If an image is provided, the AI will first describe the post content from the image.
-        userMessageContent.push({
-            type: "text",
-            text: `Analyze the attached image, which represents a LinkedIn post. Extract the main topic, key arguments, and overall sentiment. Then, generate a professional, human-like comment based on the extracted content and the following instructions:`
-        });
-        userMessageContent.push({
-            type: "image_url",
-            image_url: {
-                url: `data:${imageMimeType};base64,${imageBase64}`
-            }
-        });
-    } else {
-        // If only text is provided
-        userMessageContent.push({
-            type: "text",
-            text: `Generate a professional, human-like comment for the following LinkedIn post. The comment should be based on the post content and the following instructions:`
-        });
-    }
+Goal: ${goal}
+Tone: ${tone}
 
-    // Add the post text if available (either from direct input or as a secondary instruction for image analysis)
-    if (postContent) {
-        userMessageContent.push({
+Output: The final, polished LinkedIn comment only.`;
+
+    const userMessageContent = [
+        {
             type: "text",
-            text: `\n\n--- POST CONTENT ---\n${postContent}\n\n--- COMMENT INSTRUCTIONS ---\n- **Goal**: ${goal}\n- **Tone**: ${tone}\n\nThe output must be ONLY the comment content, following all the instructions in the system prompt. Do not include any introductory or concluding remarks.`
-        });
-    } else {
-        // If only image, the instructions are appended to the image analysis request
-        userMessageContent.push({
-            type: "text",
-            text: `\n\n--- COMMENT INSTRUCTIONS ---\n- **Goal**: ${goal}\n- **Tone**: ${tone}\n\nThe output must be ONLY the comment content, following all the instructions in the system prompt. Do not include any introductory or concluding remarks.`
-        });
-    }
+            text: userPromptText
+        }
+    ];
 
     messages.push({ role: "user", content: userMessageContent });
 
     // 3. Call the OpenAI API
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4.1-mini", // Use a model that supports Vision for image analysis
+            model: "mistralai/mistral-7b-instruct:free", // Using the specified free model from OpenRouter.ai
             messages: messages,
             temperature: 0.8,
         });
@@ -261,9 +198,9 @@ app.post('/api/comment-alchemy', upload.single('image'), async (req, res) => {
         });
 
     } catch (error) {
-        console.error('OpenAI API Error:', error.message);
+        console.error('OpenRouter API Error:', error.message);
         res.status(500).json({ 
-            error: 'Failed to generate comment from OpenAI API.',
+            error: 'Failed to generate comment from OpenRouter API.',
             details: error.message
         });
     }
