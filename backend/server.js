@@ -1,11 +1,11 @@
-const express = require('express');
+require('dotenv').config({ path: path.join(__dirname, '.env') });\nconst express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const app = express();
 const port = 3000;
 
-// Use the pre-configured environment variable for the OpenAI API key.
+// The API key is now loaded from the .env file in this directory.
 const { OpenAI } = require('openai');
 const openai = new OpenAI(); // API key and base URL are automatically picked up from environment variables
 
