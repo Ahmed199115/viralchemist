@@ -237,13 +237,13 @@ app.post('/api/hashtags-generate', async (req, res) => {
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4.1-mini", // Use a capable model for structured output
+            model: "mistralai/mistral-7b-instruct:free", // Use a free model for structured output
             messages: [
                 { role: "system", content: HASHTAG_SYSTEM_PROMPT },
                 { role: "user", content: userPrompt }
             ],
             temperature: 0.5, // Lower temperature for more predictable, structured output
-            response_format: { type: "json_object" }
+            // response_format: { type: "json_object" } // Removed as it's not supported by the free model
         });
 
         const jsonString = completion.choices[0].message.content.trim();
