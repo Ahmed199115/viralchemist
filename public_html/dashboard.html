@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   Dashboard - ViralChemist | AI SEO Article Generator
+   Dashboard - ViralChemist | AI SEO Blog Post Generator (Admin Only)
   </title>
   <meta content="ViralChemist Dashboard - AI-powered SEO article generation with advanced analytics and content optimization." name="description"/>
   <meta content="noindex, nofollow" name="robots"/>
@@ -71,11 +71,11 @@
        Overview
       </span>
      </button>
-     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="article-generator">
+     <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="blog-generator">
       <i class="fas fa-pen-fancy w-5 mr-3">
       </i>
       <span>
-       Article Generator
+       Blog Post Generator (Admin Only)
       </span>
      </button>
      <button class="nav-item w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 flex items-center" data-page="history">
@@ -215,64 +215,35 @@
       </div>
      </div>
     </div>
-    <!-- ARTICLE GENERATOR PAGE -->
-    <div class="page-section hidden" id="article-generator-page">
+    <!-- BLOG POST GENERATOR PAGE (Admin Only) -->
+    <div class="page-section hidden" id="blog-generator-page">
      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8">
        <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-        Article Generator
+        Blog Post Generator (Admin Only)
        </h2>
-       <form class="space-y-6" id="articleGeneratorForm">
+       <form class="space-y-6" id="blogGenerateForm">
         <div>
          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-          Target Keyword
+          Main Keyword
          </label>
-         <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue" placeholder="e.g., 'best SEO practices 2025'" required="" type="text"/>
+         <input class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-viral-blue" id="keywordInput" placeholder="e.g., The Future of AI in Content Marketing" required type="text"/>
         </div>
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-          Article Type
-         </label>
-         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
-          <option>
-           Blog Post
-          </option>
-          <option>
-           Guide
-          </option>
-         </select>
-        </div>
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-          Tone
-         </label>
-         <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
-          <option>
-           Professional
-          </option>
-          <option>
-           Friendly
-          </option>
-         </select>
-        </div>
-        <div class="flex items-center">
-         <input class="w-4 h-4 rounded text-viral-blue focus:ring-viral-blue" id="includeImages" type="checkbox"/>
-         <label class="ml-2 text-sm text-gray-700 dark:text-gray-300" for="includeImages">
-          Generate images with Gemini API
-         </label>
-        </div>
-        <button class="w-full py-3 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center justify-center" id="generateBtn" type="submit">
-         Generate Article
+
+        <button class="w-full py-3 bg-gradient-to-r from-viral-blue to-viral-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all flex items-center justify-center" id="generateBlogBtn" type="submit">
+         Generate Blog Post (Llama-4-Scout)
          <i class="fas fa-arrow-right ml-2">
          </i>
         </button>
        </form>
       </div>
-      <div class="lg:col-span-1 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 sticky top-24">
+      <div class="lg:col-span-1 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 sticky top-24" id="seoScoreSection">
        <h3 class="text-lg font-bold text-center mb-6 text-gray-900 dark:text-white">
-        SEO Score
+        SEO Score & Analysis
        </h3>
-       <!-- SEO Score content from original file -->
+       <div id="seoScoreContent">
+           <p class="text-center text-gray-500 dark:text-gray-400">Score will appear here after generation.</p>
+       </div>
       </div>
      </div>
      <div class="hidden mt-8 bg-white dark:bg-gray-900 rounded-lg p-8 border border-gray-200 dark:border-gray-800" id="processingStatus">
@@ -334,7 +305,7 @@
          Meta Tags
         </button>
        </div>
-       <div class="tab-content prose dark:prose-invert max-w-none" data-tab-content="article">
+       <div class="tab-content prose dark:prose-invert max-w-none" data-tab-content="article" id="articleOutput">
         <p>
          Your generated article will appear here...
         </p>

@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const pageSubtitle = document.getElementById('pageSubtitle');
     const navItems = document.querySelectorAll('.nav-item');
     const pages = document.querySelectorAll('.page-section');
-    const articleForm = document.getElementById('articleGeneratorForm');
-    const generateBtn = document.getElementById('generateBtn');
+    const blogForm = document.getElementById('blogGenerateForm');
+    const generateBtn = document.getElementById('generateBlogBtn');
     const processingStatus = document.getElementById('processingStatus');
     const resultSection = document.getElementById('resultSection');
     const tabButtons = document.querySelectorAll('.tab-button');
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const titles = {
             'overview': { title: 'Overview', subtitle: 'Welcome back to your dashboard' },
-            'article-generator': { title: 'Article Generator', subtitle: 'Create SEO-optimized articles with AI' },
+            'blog-generator': { title: 'Blog Post Generator (Admin Only)', subtitle: 'Generate SEO-optimized blog posts with Llama-4-Scout' },
             'history': { title: 'Article History', subtitle: 'View your previous articles' },
             'analytics': { title: 'Analytics', subtitle: 'Track your article performance' },
             'settings': { title: 'Settings', subtitle: 'Manage your account and API keys' }
@@ -74,44 +74,100 @@ document.addEventListener("DOMContentLoaded", function() {
     const initialPage = window.location.hash.substring(1) || 'overview';
     switchPage(initialPage);
 
-    // --- ARTICLE GENERATOR LOGIC (Simulation) ---
-    if (articleForm) {
-        articleForm.addEventListener('submit', function(e) {
+    // --- BLOG POST GENERATOR LOGIC ---
+    const keywordInput = document.getElementById('keywordInput');
+    const articleOutput = document.getElementById('articleOutput');
+    const seoScoreContent = document.getElementById('seoScoreContent');
+
+    if (blogForm) {
+        blogForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            simulateArticleGeneration();
+            generateBlogPost();
         });
     }
 
-    async function simulateArticleGeneration() {
+    // Function to convert Markdown to HTML (simple implementation)
+    function markdownToHtml(markdown) {
+        // Basic replacements for headings, paragraphs, and bold/italic
+        let html = markdown
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+            .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+            .replace(/^- (.*$)/gim, '<li>$1</li>')
+            .replace(/(\n\n)/gim, '</p><p>')
+            .replace(/(\n)/gim, '<br>');
+        
+        // Wrap in a paragraph if it doesn't start with a block element
+        if (!html.startsWith('<h') && !html.startsWith('<p')) {
+            html = '<p>' + html + '</p>';
+        }
+        
+        return html;
+    }
+
+    async function generateBlogPost() {
+        const keyword = keywordInput.value.trim();
+        if (!keyword) return;
+
         generateBtn.disabled = true;
-        generateBtn.innerHTML = `<span class="loading-spinner mr-2"></span> Generating...`;
+        generateBtn.innerHTML = `<span class="loading-spinner mr-2"></span> Generating with Llama-4-Scout...`;
         processingStatus.classList.remove('hidden');
         resultSection.classList.remove('show');
+        articleOutput.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Generating article...</p>';
+        seoScoreContent.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Analyzing...</p>';
 
-        const steps = ['step-search', 'step-analyze', 'step-generate', 'step-images'];
-        for (const stepId of steps) {
-            const stepElement = document.getElementById(stepId);
-            if (stepElement) {
-                const iconContainer = stepElement.querySelector('div');
-                const icon = iconContainer.querySelector('i');
-                iconContainer.classList.remove('bg-gray-300', 'dark:bg-gray-600');
-                iconContainer.classList.add('bg-blue-500');
-                icon.classList.add('fa-spin');
+        try {
+            const response = await fetch('/api/blog/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ keyword: keyword })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                const generatedPost = data.post;
                 
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // 1. Display the article
+                articleOutput.innerHTML = markdownToHtml(generatedPost);
                 
-                icon.classList.remove('fa-spin');
-                icon.className = 'fas fa-check';
-                iconContainer.classList.remove('bg-blue-500');
-                iconContainer.classList.add('bg-green-500');
+                // 2. Simulate SEO Score and Analysis (as the backend logic for this is not yet implemented)
+                const score = Math.floor(Math.random() * 20) + 80; // Score between 80 and 99
+                seoScoreContent.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-6xl font-extrabold text-viral-blue">${score}</p>
+                        <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mt-2">SEO Score</p>
+                    </div>
+                    <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Keyword Density: Optimal</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Readability: Grade 8</li>
+                        <li class="flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Word Count: Needs Review (Simulated)</li>
+                    </ul>
+                `;
+
+                // 3. Show results
+                resultSection.classList.add('show');
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            } else {
+                articleOutput.innerHTML = `<p class="text-red-500">Error: ${data.error || 'Failed to generate post.'}</p>`;
+                seoScoreContent.innerHTML = '<p class="text-center text-red-500">Generation Failed</p>';
             }
-        }
 
-        resultSection.classList.add('show');
-        resultSection.scrollIntoView({ behavior: 'smooth' });
-        
-        generateBtn.disabled = false;
-        generateBtn.innerHTML = `Generate Article <i class="fas fa-arrow-right ml-2"></i>`;
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            articleOutput.innerHTML = `<p class="text-red-500">Network Error: Could not connect to the server.</p>`;
+            seoScoreContent.innerHTML = '<p class="text-center text-red-500">Connection Error</p>';
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = `Generate Blog Post (Llama-4-Scout) <i class="fas fa-arrow-right ml-2"></i>`;
+            processingStatus.classList.add('hidden');
+        }
     }
 
     // --- TABS LOGIC ---

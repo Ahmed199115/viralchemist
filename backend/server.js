@@ -299,3 +299,55 @@ app.get('/api/status', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+// --- Blog Post Generation Service (Dashboard Feature) ---
+
+// System prompt for the Blog Post Generation service
+const BLOG_POST_SYSTEM_PROMPT = `You are a professional SEO and content strategist for a high-authority blog. Your task is to write a comprehensive, engaging, and well-structured blog post based on a single keyword.
+
+Requirements:
+1.  **Structure:** The post must be structured using Markdown headings (H2, H3) for readability.
+2.  **Length:** The content should be substantial, aiming for a minimum of 800 words (though the model will determine the final length).
+3.  **SEO Focus:** Naturally integrate the provided keyword throughout the article, especially in the title and first paragraph.
+4.  **Tone:** Professional, authoritative, and engaging.
+5.  **Content:** Provide deep insights, actionable advice, and clear explanations.
+6.  **Output Format:** The output MUST be ONLY the blog post content in Markdown format, starting with a main title (H1) and followed by the body. Do not include any introductory or concluding remarks outside the article itself.
+`;
+
+// Route for the "Blog Post Generation" service
+app.post('/api/blog/generate', async (req, res) => {
+    console.log('Blog Post Generation request received:', req.body);
+    
+    const { keyword } = req.body;
+
+    if (!keyword) {
+        return res.status(400).json({ error: 'Missing required field: keyword.' });
+    }
+
+    const userPrompt = \`Generate a comprehensive blog post based on the following keyword: "${keyword}"\`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "meta-llama/llama-4-scout:free", // As requested by the user
+            messages: [
+                { role: "system", content: BLOG_POST_SYSTEM_PROMPT },
+                { role: "user", content: userPrompt }
+            ],
+            temperature: 0.7, // Balanced temperature for creative but factual content
+        });
+
+        const generatedPost = completion.choices[0].message.content.trim();
+
+        res.json({ 
+            message: 'Blog post generated successfully.', 
+            post: generatedPost 
+        });
+
+    } catch (error) {
+        console.error('OpenRouter API Error:', error.message);
+        res.status(500).json({ 
+            error: 'Failed to generate blog post from OpenRouter API.',
+            details: error.message
+        });
+    }
+});
