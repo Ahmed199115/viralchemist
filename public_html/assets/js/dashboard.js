@@ -136,17 +136,27 @@ document.addEventListener("DOMContentLoaded", function() {
                 // 1. Display the article
                 articleOutput.innerHTML = markdownToHtml(generatedPost);
                 
-                // 2. Simulate SEO Score and Analysis (as the backend logic for this is not yet implemented)
-                const score = Math.floor(Math.random() * 20) + 80; // Score between 80 and 99
+                // 2. Display SEO Score and Analysis
+                const seoAnalysis = data.seoAnalysis;
+                const score = seoAnalysis.score || 0;
+                let analysisHtml = '';
+
+                if (seoAnalysis.analysis && Array.isArray(seoAnalysis.analysis)) {
+                    analysisHtml = seoAnalysis.analysis.map(item => {
+                        const iconClass = item.type === 'Good' ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-triangle text-red-500';
+                        return `<li class="flex items-start"><i class="${iconClass} mr-2 mt-1"></i><span>${item.point}</span></li>`;
+                    }).join('');
+                } else {
+                    analysisHtml = `<li class="flex items-start"><i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-1"></i><span>Could not retrieve detailed analysis. Score: ${score}</span></li>`;
+                }
+
                 seoScoreContent.innerHTML = `
                     <div class="text-center">
                         <p class="text-6xl font-extrabold text-viral-blue">${score}</p>
                         <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mt-2">SEO Score</p>
                     </div>
-                    <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Keyword Density: Optimal</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Readability: Grade 8</li>
-                        <li class="flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Word Count: Needs Review (Simulated)</li>
+                    <ul class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400 list-none p-0">
+                        ${analysisHtml}
                     </ul>
                 `;
 

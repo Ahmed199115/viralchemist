@@ -302,6 +302,26 @@ app.listen(port, () => {
 
 // --- Blog Post Generation Service (Dashboard Feature) ---
 
+// System prompt for the SEO Analysis service
+const SEO_ANALYSIS_SYSTEM_PROMPT = \`You are an expert SEO content analyst. Your task is to analyze a provided blog post against a target keyword and return a structured JSON object containing an SEO score and a list of key analysis points.
+
+The analysis must be based on the following criteria:
+1.  **SEO Score (0-100):** A single integer representing the overall quality and SEO-friendliness of the post.
+2.  **Analysis Points:** A list of 3-5 critical observations about the post, categorized as 'Good' (positive) or 'Improvement' (needs work).
+
+The output MUST be a JSON object with the following structure:
+{
+  "score": 85, // Integer between 0 and 100
+  "analysis": [
+    { "type": "Good", "point": "Strong, keyword-rich title and first paragraph." },
+    { "type": "Improvement", "point": "The article is slightly short; aim for 1000+ words for competitive keywords." },
+    { "type": "Good", "point": "Excellent use of H2 and H3 headings for structure." }
+  ]
+}
+
+Do not include any text or explanation outside the JSON object.
+\`;
+
 // System prompt for the Blog Post Generation service
 const BLOG_POST_SYSTEM_PROMPT = `You are a professional SEO and content strategist for a high-authority blog. Your task is to write a comprehensive, engaging, and well-structured blog post based on a single keyword.
 
@@ -327,7 +347,8 @@ app.post('/api/blog/generate', async (req, res) => {
     const userPrompt = \`Generate a comprehensive blog post based on the following keyword: "${keyword}"\`;
 
     try {
-        const completion = await openai.chat.completions.create({
+        // 1. Generate the Blog Post
+        const generationCompletion = await openai.chat.completions.create({
             model: "meta-llama/llama-4-scout:free", // As requested by the user
             messages: [
                 { role: "system", content: BLOG_POST_SYSTEM_PROMPT },
@@ -336,11 +357,42 @@ app.post('/api/blog/generate', async (req, res) => {
             temperature: 0.7, // Balanced temperature for creative but factual content
         });
 
-        const generatedPost = completion.choices[0].message.content.trim();
+        const generatedPost = generationCompletion.choices[0].message.content.trim();
 
+        // 2. Analyze the Generated Post for SEO Score
+        const analysisPrompt = \`Analyze the following blog post against the target keyword: "${keyword}"
+
+Blog Post Content:
+---
+${generatedPost}
+---\`;
+
+        const analysisCompletion = await openai.chat.completions.create({
+            model: "mistralai/mistral-7b-instruct:free", // Using a free model for structured analysis
+            messages: [
+                { role: "system", content: SEO_ANALYSIS_SYSTEM_PROMPT },
+                { role: "user", content: analysisPrompt }
+            ],
+            temperature: 0.5, // Lower temperature for more predictable, structured output
+        });
+
+        const analysisJsonString = analysisCompletion.choices[0].message.content.trim();
+        let analysisData;
+        try {
+            analysisData = JSON.parse(analysisJsonString);
+        } catch (e) {
+            console.error("Failed to parse SEO analysis JSON:", analysisJsonString);
+            analysisData = {
+                score: 0,
+                analysis: [{ type: "Improvement", point: "Failed to get structured SEO analysis from AI." }]
+            };
+        }
+
+        // 3. Return both the post and the analysis
         res.json({ 
-            message: 'Blog post generated successfully.', 
-            post: generatedPost 
+            message: 'Blog post generated and analyzed successfully.', 
+            post: generatedPost,
+            seoAnalysis: analysisData
         });
 
     } catch (error) {
