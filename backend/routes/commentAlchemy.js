@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { createWorker } = require('tesseract.js');
-const openai = require('../apiClient');
+const OPENROUTER_API_KEY = process.env.OPENAI_API_KEY; // OpenRouter uses the same env var
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const MODEL_NAME = "mistralai/mistral-7b-instruct:free";
 
 const COMMENT_ALCHEMY_SYSTEM_PROMPT = `You are a professional LinkedIn engagement strategist. Your job is to write a deeply thoughtful, value-adding comment on a LinkedIn post.
 
@@ -90,15 +92,29 @@ Output: The final, polished LinkedIn comment only.`;
 
     messages.push({ role: "user", content: userMessageContent });
 
-    // 3. Call the OpenAI API
+    // 3. Call the OpenRouter API
     try {
-        const completion = await openai.chat.completions.create({
-            model: "mistralai/mistral-7b-instruct:free", // Using the specified free model from OpenRouter.ai
-            messages: messages,
-            temperature: 0.8,
+        const response = await fetch(OPENROUTER_URL, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://viralchemist.com", // Placeholder for YOUR_SITE_URL
+                "X-Title": "ViralChemist" // Placeholder for YOUR_SITE_NAME
+            },
+            body: JSON.stringify({
+                "model": MODEL_NAME,
+                "messages": messages,
+                "temperature": 0.8,
+            })
         });
 
-        const generatedComment = completion.choices[0].message.content.trim();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const generatedComment = data.choices[0].message.content.trim();
 
         res.json({ 
             message: 'Comment generated successfully.', 

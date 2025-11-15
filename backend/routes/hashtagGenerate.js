@@ -1,4 +1,6 @@
-const openai = require('../apiClient');
+const OPENROUTER_API_KEY = process.env.OPENAI_API_KEY; // OpenRouter uses the same env var
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const MODEL_NAME = "mistralai/mistral-7b-instruct:free";
 
 const HASHTAG_SYSTEM_PROMPT = `You are a professional social media hashtag strategist specializing in LinkedIn, TikTok, Instagram, and professional content growth.
 
@@ -37,16 +39,30 @@ const hashtagGenerateRoute = async (req, res) => {
     const userPrompt = `Input: ${topic}`;
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: "mistralai/mistral-7b-instruct:free", // Using the specified free model from OpenRouter.ai
-            messages: [
-                { role: "system", content: HASHTAG_SYSTEM_PROMPT },
-                { role: "user", content: userPrompt }
-            ],
-            temperature: 0.5, // Lower temperature for more predictable, structured output
+        const response = await fetch(OPENROUTER_URL, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://viralchemist.com", // Placeholder for YOUR_SITE_URL
+                "X-Title": "ViralChemist" // Placeholder for YOUR_SITE_NAME
+            },
+            body: JSON.stringify({
+                "model": MODEL_NAME,
+                "messages": [
+                    { "role": "system", "content": HASHTAG_SYSTEM_PROMPT },
+                    { "role": "user", "content": userPrompt }
+                ],
+                "temperature": 0.5,
+            })
         });
 
-        const generatedHashtags = completion.choices[0].message.content.trim();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const generatedHashtags = data.choices[0].message.content.trim();
 
         res.json({ 
             message: 'Hashtags generated successfully.', 
