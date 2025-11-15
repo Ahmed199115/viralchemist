@@ -76,7 +76,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- BLOG POST GENERATOR LOGIC ---
     const keywordInput = document.getElementById('keywordInput');
-    const articleOutput = document.getElementById('articleOutput');
+    const articleEditor = document.getElementById('articleEditor');
+    const publishBtn = document.getElementById('publishBtn');
+    let tinyMCEEditor; // Variable to hold the TinyMCE instance
     const seoScoreContent = document.getElementById('seoScoreContent');
 
     if (blogForm) {
@@ -86,9 +88,29 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Function to convert Markdown to HTML (simple implementation)
+    // --- TINYMCE INITIALIZATION ---
+    tinymce.init({
+        selector: '#articleEditor',
+        plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | aiRewriteButton',
+        menubar: 'file edit view insert format tools table help',
+        setup: function (editor) {
+            editor.ui.registry.addButton('aiRewriteButton', {
+                text: 'AI Rewrite',
+                icon: 'magic',
+                onAction: function () {
+                    aiRewriteSelectedText(editor);
+                }
+            });
+            editor.on('init', function (e) {
+                tinyMCEEditor = editor;
+            });
+        }
+    });
+
+    // Function to convert Markdown to HTML (simple implementation for initial load)
     function markdownToHtml(markdown) {
-        // Basic replacements for headings, paragraphs, and bold/italic
+        // This is a simple conversion. TinyMCE will handle the final HTML.
         let html = markdown
             .replace(/^# (.*$)/gim, '<h1>$1</h1>')
             .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -96,16 +118,107 @@ document.addEventListener("DOMContentLoaded", function() {
             .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
             .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-            .replace(/^- (.*$)/gim, '<li>$1</li>')
             .replace(/(\n\n)/gim, '</p><p>')
             .replace(/(\n)/gim, '<br>');
         
-        // Wrap in a paragraph if it doesn't start with a block element
-        if (!html.startsWith('<h') && !html.startsWith('<p')) {
-            html = '<p>' + html + '</p>';
-        }
-        
         return html;
+    }
+
+    // --- AI REWRITE LOGIC ---
+    async function aiRewriteSelectedText(editor) {
+        const selectedText = editor.selection.getContent({ format: 'text' }).trim();
+        if (!selectedText) {
+            alert('Please select the text you want the AI to rewrite.');
+            return;
+        }
+
+        editor.windowManager.open({
+            title: 'AI Rewrite Options',
+            body: {
+                type: 'panel',
+                items: [
+                    {
+                        type: 'label',
+                        label: 'Selected Text:',
+                        items: [{ type: 'html', html: `<p style="max-height: 100px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">${selectedText.substring(0, 200)}...</p>` }]
+                    },
+                    {
+                        type: 'selectbox',
+                        name: 'rewriteGoal',
+                        label: 'Rewrite Goal',
+                        items: [
+                            { text: 'Improve Clarity and Flow', value: 'Improve Clarity and Flow' },
+                            { text: 'Expand and Add Detail', value: 'Expand and Add Detail' },
+                            { text: 'Simplify and Shorten', value: 'Simplify and Shorten' },
+                            { text: 'Improve SEO and Keyword Density', value: 'Improve SEO and Keyword Density' }
+                        ],
+                        initialValue: 'Improve Clarity and Flow'
+                    }
+                ]
+            },
+            buttons: [
+                {
+                    type: 'custom',
+                    name: 'rewrite',
+                    text: 'Rewrite',
+                    buttonType: 'primary',
+                    onAction: async function (api) {
+                        const data = api.getData();
+                        api.close();
+                        
+                        editor.setProgressState(true);
+                        
+                        try {
+                            const response = await fetch('/api/rewrite', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: selectedText, goal: data.rewriteGoal })
+                            });
+
+                            const result = await response.json();
+
+                            if (response.ok) {
+                                editor.selection.setContent(result.rewrittenText);
+                                editor.notificationManager.open({ text: 'AI Rewrite successful!', type: 'success' });
+                            } else {
+                                editor.notificationManager.open({ text: result.error || 'AI Rewrite failed.', type: 'error' });
+                            }
+                        } catch (error) {
+                            editor.notificationManager.open({ text: 'Network error during AI Rewrite.', type: 'error' });
+                        } finally {
+                            editor.setProgressState(false);
+                        }
+                    }
+                },
+                {
+                    type: 'cancel',
+                    name: 'cancel',
+                    text: 'Cancel'
+                }
+            ]
+        });
+    }
+
+    // --- PUBLISH LOGIC ---
+    if (publishBtn) {
+        publishBtn.addEventListener('click', function() {
+            if (!tinyMCEEditor) {
+                alert('Editor is not ready.');
+                return;
+            }
+
+            const articleContent = tinyMCEEditor.getContent();
+            const articleTitle = tinyMCEEditor.dom.select('h1')[0] ? tinyMCEEditor.dom.select('h1')[0].textContent : 'Untitled Article';
+
+            if (articleContent.length < 100) {
+                alert('Article content is too short to publish.');
+                return;
+            }
+
+            // In a real application, this would send the final HTML to a database
+            // and update the blog.html page. For now, we'll simulate success.
+            alert(\`Article "\${articleTitle}" is ready to be published! (Simulated)\n\nContent Length: \${articleContent.length} characters.\`);
+        });
     }
 
     async function generateBlogPost() {
@@ -133,8 +246,13 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 const generatedPost = data.post;
                 
-                // 1. Display the article
-                articleOutput.innerHTML = markdownToHtml(generatedPost);
+                // 1. Display the article in TinyMCE
+                if (tinyMCEEditor) {
+                    tinyMCEEditor.setContent(markdownToHtml(generatedPost));
+                } else {
+                    // Fallback if TinyMCE is not yet ready
+                    articleEditor.value = generatedPost;
+                }
                 
                 // 2. Display SEO Score and Analysis
                 const seoAnalysis = data.seoAnalysis;

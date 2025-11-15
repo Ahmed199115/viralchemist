@@ -403,3 +403,55 @@ ${generatedPost}
         });
     }
 });
+
+// --- AI Rewrite Service for Editor ---
+
+// System prompt for the AI Rewrite service
+const AI_REWRITE_SYSTEM_PROMPT = \`You are a professional content editor and SEO specialist. Your task is to rewrite a provided text snippet to improve its quality, clarity, and SEO value.
+
+Requirements:
+1.  **Goal:** Rewrite the text to be more engaging, authoritative, and clear.
+2.  **Tone:** Maintain a professional and authoritative tone suitable for a high-authority blog.
+3.  **Output:** The output MUST be ONLY the rewritten text. Do not include any introductory or concluding remarks.
+\`;
+
+// Route for the "AI Rewrite" service
+app.post('/api/rewrite', async (req, res) => {
+    console.log('AI Rewrite request received:', req.body);
+    
+    const { text } = req.body;
+
+    if (!text) {
+        return res.status(400).json({ error: 'Missing required field: text to rewrite.' });
+    }
+
+    const userPrompt = \`Rewrite the following text snippet to improve its quality and clarity:
+---
+${text}
+---\`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "mistralai/mistral-7b-instruct:free", // Using a free model for quick rewrite
+            messages: [
+                { role: "system", content: AI_REWRITE_SYSTEM_PROMPT },
+                { role: "user", content: userPrompt }
+            ],
+            temperature: 0.7, // Allow for some creativity in rewriting
+        });
+
+        const rewrittenText = completion.choices[0].message.content.trim();
+
+        res.json({ 
+            message: 'Text rewritten successfully.', 
+            rewrittenText: rewrittenText 
+        });
+
+    } catch (error) {
+        console.error('OpenRouter API Error:', error.message);
+        res.status(500).json({ 
+            error: 'Failed to rewrite text from OpenRouter API.',
+            details: error.message
+        });
+    }
+});
