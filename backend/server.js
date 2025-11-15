@@ -277,17 +277,88 @@ app.post('/api/signup', (req, res) => {
     res.json({ message: 'Signup functionality is under development.', success: false });
 });
 
+// Route for publishing a new blog post (from dashboard)
+app.post('/api/blog/publish', async (req, res) => {
+    console.log('Blog post publish request received:', req.body);
+    
+    const { title, content, seoAnalysis } = req.body;
+
+    if (!title || !content || !seoAnalysis) {
+        return res.status(400).json({ error: 'Missing required fields: title, content, and seoAnalysis.' });
+    }
+
+    const article = {
+        id: Date.now(), // Simple unique ID
+        title: title,
+        content: content, // HTML content from TinyMCE
+        seoAnalysis: seoAnalysis,
+        date: new Date().toISOString().split('T')[0],
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-*|-*$/g, ''),
+        excerpt: content.replace(/<[^>]*>/g, '').substring(0, 200) + '...', // Simple excerpt from HTML
+        author: 'Admin' // Assuming Admin for now
+    };
+
+    const articlesFilePath = path.join(__dirname, 'articles.json');
+
+    try {
+        // 1. Read existing articles
+        let articles = [];
+        if (fs.existsSync(articlesFilePath)) {
+            const data = await fs.promises.readFile(articlesFilePath, 'utf8');
+            articles = JSON.parse(data);
+        }
+
+        // 2. Add new article
+        articles.unshift(article); // Add to the beginning
+
+        // 3. Write back to file
+        await fs.promises.writeFile(articlesFilePath, JSON.stringify(articles, null, 2), 'utf8');
+
+        res.json({ 
+            message: 'Article published successfully.', 
+            article: article 
+        });
+
+    } catch (error) {
+        console.error('File operation error during publish:', error);
+        res.status(500).json({ 
+            error: 'Failed to publish article due to server error.',
+            details: error.message
+        });
+    }
+});
+
 // Placeholder route for creating a new blog post (from dashboard)
 app.post('/api/blog/create', (req, res) => {
-    // Logic for creating a blog post will be added later
+    // This is now redundant but kept for structure. The publish route is the main one.
     console.log('Blog post creation request received:', req.body);
     res.json({ message: 'Blog creation functionality is under development.', success: false });
 });
 
-// Placeholder route for fetching blog posts
-app.get('/api/blog', (req, res) => {
-    // Logic for fetching blog posts will be added later
-    res.json({ message: 'Fetching blog posts is under development.', posts: [] });
+// Route for fetching blog posts
+app.get('/api/blog', async (req, res) => {
+    const articlesFilePath = path.join(__dirname, 'articles.json');
+
+    try {
+        // 1. Read existing articles
+        let articles = [];
+        if (fs.existsSync(articlesFilePath)) {
+            const data = await fs.promises.readFile(articlesFilePath, 'utf8');
+            articles = JSON.parse(data);
+        }
+
+        res.json({ 
+            message: 'Articles fetched successfully.', 
+            posts: articles 
+        });
+
+    } catch (error) {
+        console.error('File operation error during fetch:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch articles due to server error.',
+            details: error.message
+        });
+    }
 });
 
 // Simple health check route

@@ -201,23 +201,77 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- PUBLISH LOGIC ---
     if (publishBtn) {
-        publishBtn.addEventListener('click', function() {
+        publishBtn.addEventListener('click', async function() {
             if (!tinyMCEEditor) {
                 alert('Editor is not ready.');
                 return;
             }
 
             const articleContent = tinyMCEEditor.getContent();
-            const articleTitle = tinyMCEEditor.dom.select('h1')[0] ? tinyMCEEditor.dom.select('h1')[0].textContent : 'Untitled Article';
+            const articleTitleElement = tinyMCEEditor.dom.select('h1')[0];
+            const articleTitle = articleTitleElement ? articleTitleElement.textContent.trim() : 'Untitled Article';
 
             if (articleContent.length < 100) {
-                alert('Article content is too short to publish.');
+                alert('Article content is too short to publish. Minimum 100 characters required.');
                 return;
             }
 
-            // In a real application, this would send the final HTML to a database
-            // and update the blog.html page. For now, we'll simulate success.
-            alert(\`Article "\${articleTitle}" is ready to be published! (Simulated)\n\nContent Length: \${articleContent.length} characters.\`);
+            // Extract SEO Analysis data from the sidebar
+            const seoScoreElement = document.querySelector('#seoScoreContent p.text-6xl');
+            const seoScore = seoScoreElement ? parseInt(seoScoreElement.textContent) : 0;
+            
+            const analysisItems = Array.from(document.querySelectorAll('#seoScoreContent ul li')).map(li => {
+                const type = li.querySelector('.fa-check-circle') ? 'Good' : 'Improvement';
+                const point = li.querySelector('span').textContent.trim();
+                return { type, point };
+            });
+
+            const seoAnalysis = {
+                score: seoScore,
+                analysis: analysisItems
+            };
+
+            if (seoScore === 0 && analysisItems.length === 0) {
+                if (!confirm('The SEO analysis data is missing or incomplete. Do you want to publish anyway?')) {
+                    return;
+                }
+            }
+
+            publishBtn.disabled = true;
+            publishBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Publishing...`;
+
+            try {
+                const response = await fetch('/api/blog/publish', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        title: articleTitle, 
+                        content: articleContent, 
+                        seoAnalysis: seoAnalysis 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(\`Article "\${articleTitle}" published successfully!\`);
+                    // Optionally clear the editor or switch to history page
+                    tinyMCEEditor.setContent('');
+                    seoScoreContent.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Score will appear here after generation.</p>';
+                    switchPage('history'); // Switch to history page after publishing
+                } else {
+                    alert(\`Publishing Failed: \${data.error || 'Unknown error'}\`);
+                }
+
+            } catch (error) {
+                console.error('Publish Error:', error);
+                alert('Network Error: Could not connect to the server to publish the article.');
+            } finally {
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = `<i class="fas fa-upload mr-2"></i> Publish to Blog`;
+            }
         });
     }
 
